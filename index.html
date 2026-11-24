@@ -167,6 +167,13 @@ img{display:block;max-width:100%}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .chk{display:flex;gap:10px;align-items:flex-start;background:#fff7d6;border-radius:14px;padding:12px;font-size:14px;line-height:1.35;margin-bottom:10px}
 .chk input{width:22px;height:22px;flex:none;margin-top:1px}
+.phs{display:flex;gap:8px;flex-wrap:wrap}
+.phadd,.ph{width:84px;height:84px;border-radius:14px;flex:none}
+.phadd{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;border:2px dashed #ff9cc6;font-size:26px;cursor:pointer}
+.phadd small{font-size:11px;color:var(--muted);margin-top:2px}
+.ph{position:relative;background:#eee center/cover;border:2px solid #fff;box-shadow:0 3px 0 rgba(27,37,89,.12)}
+.ph button{position:absolute;right:-6px;top:-6px;width:24px;height:24px;border-radius:50%;background:#ff5fa2;color:#fff;font-size:14px;line-height:24px;padding:0}
+.phnote{display:block;font-size:12px;color:var(--muted);margin:6px 4px 0}
 .btn.pink{background:#ff5fa2;box-shadow:0 5px 0 #c2306f}
 .small{font-size:12.5px;color:var(--muted);text-align:center;margin:10px 4px;line-height:1.35}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
@@ -262,6 +269,9 @@ img{display:block;max-width:100%}
     <label class="fld"><span>Yoshi</span><input id="o-age" maxlength="10" inputmode="numeric" placeholder="5"></label>
   </div>
   <label class="fld"><span>O‘g‘il yoki qiz</span><select id="o-gender"><option value="o'g'il">O‘g‘il bola</option><option value="qiz">Qiz bola</option></select></label>
+  <div class="fld"><span>Farzandingiz rasmi (ixtiyoriy, 3 tagacha)</span>
+    <div class="phs" id="o-phs"><label class="phadd">📷<small>Rasm qo‘shish</small><input type="file" id="o-file" accept="image/*" multiple hidden></label></div>
+    <small class="phnote">Yuzi aniq ko‘ringan rasm bo‘lsin. Rasm faqat qahramon yasash uchun ishlatiladi va o‘chiriladi.</small></div>
   <label class="fld"><span>Ko‘rinishi (soch, kiyim, rangi)</span><input id="o-look" maxlength="200" placeholder="Jingalak soch, ko‘k futbolka"></label>
   <label class="fld"><span>Multfilm mavzusi</span><select id="o-topic">
     <option>Salom berish</option><option>Tish yuvish</option><option>O‘yinchoqlarni yig‘ishtirish</option><option>Ota-onaga yordam berish</option>
@@ -269,7 +279,7 @@ img{display:block;max-width:100%}
   <label class="fld"><span>Izoh (ixtiyoriy)</span><textarea id="o-note" rows="2" maxlength="300" placeholder="Masalan: tish yuvishni yoqtirmaydi, mashinani yaxshi ko‘radi"></textarea></label>
   <label class="chk" id="o-cwrap" hidden><input type="checkbox" id="o-consent"><span>Roziman: multfilm Odobim YouTube kanalida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.</span></label>
   <button class="btn pink" id="o-send">🎬 Buyurtma berish</button>
-  <p class="small">Buyurtmadan keyin bot to‘lov ma’lumotini yuboradi. Farzandingiz rasmini ham botga yuborishingiz mumkin. Rasm faqat qahramon yasash uchun ishlatiladi va o‘chiriladi. Multfilmda faqat Halili, Oisha, Maryam, Rayyona va sizning farzandingiz bo‘ladi.</p>
+  <p class="small">Buyurtmadan keyin bot to‘lov ma’lumotini yuboradi. Multfilmda faqat Halili, Oisha, Maryam, Rayyona va sizning farzandingiz bo‘ladi.</p>
   </div>
   <div id="odone"></div>
 </section>
@@ -478,13 +488,31 @@ function wRender(){
 /* ---------- BUYURTMA ---------- */
 var API="https://odobim-bot.muhibulloh2405.workers.dev", oT="oila";
 $$("#otars .tar").forEach(function(b){ b.onclick=function(){ $$("#otars .tar").forEach(function(x){x.classList.remove("on");}); b.classList.add("on"); oT=b.dataset.t; $("#o-cwrap").hidden=oT!=="dost"; hap(); }; });
+var oPh=[];
+function phRender(){
+  var box=$("#o-phs"); $$("#o-phs .ph").forEach(function(x){x.remove();});
+  oPh.forEach(function(d,i){ var e=document.createElement("div"); e.className="ph"; e.style.backgroundImage="url("+d+")";
+    var x=document.createElement("button"); x.textContent="×"; x.onclick=function(){ oPh.splice(i,1); phRender(); }; e.appendChild(x);
+    box.insertBefore(e,box.lastElementChild); });
+  box.lastElementChild.style.display=oPh.length>=3?"none":"";
+}
+function shrink(f,cb){
+  var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){
+    var k=Math.min(1,1280/Math.max(im.width,im.height)), c=document.createElement("canvas");
+    c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    cb(c.toDataURL("image/jpeg",.85)); }; im.onerror=function(){cb(null);}; im.src=r.result; }; r.readAsDataURL(f);
+}
+$("#o-file").onchange=function(){
+  var fs=[].slice.call(this.files||[]).slice(0,3-oPh.length); this.value="";
+  fs.forEach(function(f){ shrink(f,function(d){ if(d&&oPh.length<3){ oPh.push(d); phRender(); } }); });
+};
 $("#o-send").onclick=function(){
   var child=$("#o-child").value.trim(), btn=$("#o-send");
   if(!child){ $("#o-child").focus(); try{ tg&&tg.showAlert("Farzandingiz ismini yozing 🙂"); }catch(e){} return; }
   if(oT==="dost" && !$("#o-consent").checked){ try{ tg ? tg.showAlert("YouTube tarifi uchun rozilik belgisini qo‘ying.") : alert("Rozilik belgisini qo‘ying"); }catch(e){} return; }
   if(!tg || !tg.initData){ alert("Buyurtma berish uchun ilovani Telegram’da @odobimbot orqali oching."); return; }
   btn.disabled=true; btn.textContent="Yuborilmoqda…";
-  fetch(API+"/api/order",{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify({tariff:oT,consent:$("#o-consent").checked,child:child,age:$("#o-age").value,gender:$("#o-gender").value==="qiz"?"qiz":"o'g'il",look:$("#o-look").value,topic:$("#o-topic").value,note:$("#o-note").value})})
+  fetch(API+"/api/order",{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify({tariff:oT,consent:$("#o-consent").checked,child:child,age:$("#o-age").value,gender:$("#o-gender").value==="qiz"?"qiz":"o'g'il",look:$("#o-look").value,topic:$("#o-topic").value,note:$("#o-note").value,photos:oPh})})
    .then(function(r){return r.json();}).then(function(r){
      if(!r.ok) throw 0;
      hap("ok"); confetti(); $("#ofrm").hidden=true;

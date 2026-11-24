@@ -49,6 +49,17 @@ async function webAppUser(req, env) {
 }
 
 /* ---------- Telegram API ---------- */
+async function tgPhoto(env, chat_id, dataUrl, caption) {
+  const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(dataUrl || "");
+  if (!m || m[2].length > 2800000) return { ok: false };
+  const bin = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0));
+  const fd = new FormData();
+  fd.append("chat_id", String(chat_id));
+  fd.append("caption", caption);
+  fd.append("photo", new Blob([bin], { type: "image/" + m[1] }), "bola." + (m[1] === "jpeg" ? "jpg" : m[1]));
+  const r = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendPhoto`, { method: "POST", body: fd });
+  return r.json().catch(() => ({ ok: false }));
+}
 async function tg(env, method, body) {
   const r = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/${method}`, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body)
@@ -214,6 +225,8 @@ async function api(req, env, path) {
       parent: [user.first_name, user.last_name].filter(Boolean).join(" ").slice(0, 40), username: user.username || ""
     };
     if (!o.child) return json({ ok: false, error: "name" }, 400);
+    const photos = (Array.isArray(body.photos) ? body.photos : []).slice(0, 3);
+    o.photos = photos.length;
     if (t === "dost" && !o.consent) return json({ ok: false, error: "consent" }, 400);
     const seq = Number(await env.DB.get("orderSeq") || 100) + 1;
     o.id = seq;
@@ -233,7 +246,7 @@ ${TARIFFS[t].name} — <b>${fmt(o.price)} so‘m</b>
 ${CARD_OWNER}
 
 📸 Keyin to‘lov chekini (skrinshot) shu chatga yuboring.
-🧒 Xohlasangiz, farzandingizning rasmini ham yuboring — qahramon unga o‘xshab chiqadi. Rasm faqat qahramon yasash uchun ishlatiladi va ish tugagach o‘chiriladi.
+${o.photos ? "🧒 Farzandingiz rasmi qabul qilindi — qahramon unga o‘xshab chiqadi. Rasm faqat qahramon yasash uchun ishlatiladi va ish tugagach o‘chiriladi." : "🧒 Xohlasangiz, farzandingizning rasmini ham yuboring — qahramon unga o‘xshab chiqadi. Rasm faqat qahramon yasash uchun ishlatiladi va ish tugagach o‘chiriladi."}
 
 ⏳ To‘lov tasdiqlangach, multfilm 1–2 kun ichida tayyor bo‘ladi.` });
     await tg(env, "sendMessage", { chat_id: ADMIN_ID, parse_mode: "HTML", text:
@@ -245,8 +258,10 @@ ${TARIFFS[t].name} — ${fmt(o.price)} so‘m${o.consent ? "\n✅ YouTube’ga q
 📚 Mavzu: ${esc(o.topic)}
 📝 Izoh: ${esc(o.note) || "—"}
 👤 Ota-ona: ${esc(o.parent)}${o.username ? " @" + esc(o.username) : ""} (id ${id})
+🖼 Rasm: ${o.photos ? o.photos + " ta (pastda)" : "yo‘q"}
 
 Chek kelsa, shu yerga yuboraman. Tayyor multfilmni yuborish: videoni <code>#${seq}</code> izohi bilan shu botga yuboring.` });
+    for (let i = 0; i < photos.length; i++) await tgPhoto(env, ADMIN_ID, photos[i], `#${seq} · ${o.child} · rasm ${i + 1}`);
     return json({ ok: true, id: seq });
   }
   return json({ ok: true });
