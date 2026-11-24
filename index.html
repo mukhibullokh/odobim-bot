@@ -131,6 +131,17 @@ img{display:block;max-width:100%}
 .ep small{display:block;color:var(--c-sky2);font-size:12.5px;margin-top:3px;font-family:Nunito;font-weight:800}
 .ep.soon img{filter:saturate(.35) brightness(.92)}
 .ep.soon small{color:var(--muted)}
+.qmini{background:var(--c-purple);color:#fff;font-family:Fredoka;font-weight:600;font-size:15px;border-radius:14px;padding:8px 12px;margin-bottom:8px;box-shadow:0 4px 0 var(--c-purple2)}
+.qimg{position:relative;height:calc(100vh - 330px);min-height:300px;max-height:640px;border-radius:20px;overflow:hidden;background:#2b1a55;border:4px solid #fff;box-shadow:0 5px 0 rgba(27,37,89,.15)}
+.qimg .bg{position:absolute;inset:-20px;background-size:cover;background-position:center;filter:blur(18px) brightness(.8)}
+.qimg img{position:relative;width:100%;height:100%;object-fit:contain}
+.qimg .tag{position:absolute;left:8px;top:8px;background:rgba(255,255,255,.92);border-radius:99px;padding:4px 10px;font-family:Fredoka;font-weight:600;font-size:13px;color:var(--ink)}
+#v-quiz .opts{gap:8px;margin-top:10px}
+#v-quiz .opt{padding:10px 12px;font-size:15px;border-radius:14px;box-shadow:0 4px 0 rgba(27,37,89,.12);gap:10px;width:100%}
+#v-quiz .opt .ic{width:28px;height:28px;font-size:15px}
+#v-quiz .note{margin-top:8px;padding:9px 12px;font-size:14px}
+#v-quiz .btn{margin-top:10px;padding:12px;font-size:17px}
+#v-quiz .prog{height:8px;margin-bottom:8px}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
 </head>
@@ -180,7 +191,7 @@ img{display:block;max-width:100%}
 <!-- VIKTORINA -->
 <section class="view" id="v-quiz">
   <div class="bar"><button class="back" data-back>‹</button><h2>Odob viktorinasi</h2><span class="pill" id="qscore">⭐ 0</span></div>
-  <div class="shead purple"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/b7342260-5481-42de-9b65-a3e0eabc326d.jpg" alt=""><p>Qaysi biri to‘g‘ri? Tanla! 🤔</p></div>
+  <div class="qmini">🤔 Qaysi biri to‘g‘ri? Rasmga qarab tanla!</div>
   <div class="prog"><i id="qprog" style="width:0"></i></div>
   <div id="qbox"></div>
 </section>
@@ -217,20 +228,20 @@ var CH = "https://www.youtube.com/@odobim/shorts";
 
 /* Multfilmlar: n, nom, muqova, YouTube ID, chiqish sanasi, viktorina (noto‘g‘ri / to‘g‘ri) */
 var EPS = [
- {n:10,q:"2f2ccf3b-d716-4391-9740-03fd7af5ddd6",t:"Salom beramiz",i:"676e992c-0380-4b2b-bbb2-7fdff80f81b0",w:"Buvijonni ko‘rib yashirinib olish",r:"Kattalarga «Assalomu alaykum» deyish",m:"Kattalarga doim birinchi bo‘lib salom beramiz."},
- {n:11,q:"78029c39-3db2-448a-88c3-38d64d454ac2",t:"Qo‘l yuvamiz",i:"6c87df34-1acb-4982-bf26-3ad6c84f9ee1",w:"Kir qo‘l bilan ovqat yeyish",r:"Ovqatdan oldin sovun bilan qo‘l yuvish",m:"Ovqatdan oldin qo‘limizni sovunlab yuvamiz."},
- {n:12,q:"94f9b6d8-a93c-42a3-aa63-893e22e1bab5",t:"Ukaga yordam",i:"8a85bd6f-0dc6-43c7-a65d-5f7471d6bee1",w:"Uka qiynalsa, qarab turish",r:"Ukaga yordam qo‘lini cho‘zish",m:"Ukalarimizga yordam beramiz."},
- {n:13,q:"991158f6-4036-4403-9982-a211de68501c",t:"Yangi do‘st",i:"c5fa377e-a2a2-4e66-b917-7129d7e6fca9",w:"Yolg‘iz bolani chetga qoldirish",r:"Uni o‘yinga chaqirish",m:"Yolg‘iz bolani o‘yinga chaqiramiz."},
- {n:14,q:"92c34c65-0dc9-4014-9ade-0b644b05a97d",t:"Bobojonga joy",i:"f868c604-a93e-408c-b616-1022bead36e8",w:"Joyni bermay o‘tirib olish",r:"Bobojonga joy berish",m:"Kattalarga joy beramiz."},
- {n:15,q:"3bea2818-bc70-4560-baa0-feb3381e1b97",t:"Non — aziz",i:"0e77c967-c5d6-40ad-b88d-0392f370341c",w:"Non bilan o‘ynash",r:"Nonni e’zozlab, ehtiyot qilish",m:"Non — aziz, u bilan o‘ynamaymiz."},
- {n:16,q:"e3520545-1887-4464-9b1e-3de81a1f3530",t:"Birga yig‘ishtiramiz",i:"2682df14-2ff1-46fa-ad30-1d6eafe6a1a4",w:"O‘yinga qochib ketish",r:"Hamma bilan birga yig‘ishtirish",m:"Birga qilsak — tez va oson."},
- {n:17,q:"7bdd612f-c230-44c5-9175-037c036ab0cb",t:"Tishlarni yuvamiz",i:"a0e4ca85-7304-4a8d-82c6-19a4eb6e0cd4",y:"flrcakT4ATs",d:"2026-11-21",w:"Shokoladdan keyin tish yuvmay uxlash",r:"Ertalab va kechqurun tish yuvish",m:"Ertalab va kechqurun tish yuvamiz."},
- {n:18,q:"72ad266f-d5d4-4554-bd94-a5b855a6aa90",t:"Ruxsat so‘raymiz",i:"44c32ced-8dcd-487c-888e-0171af51411f",y:"RMH3ooCvo0Q",d:"2026-11-22",w:"Opaning qalamlarini so‘ramay olish",r:"«Oisha opa, olsam maylimi?» deb so‘rash",m:"Birovning narsasini so‘rab olamiz."},
- {n:19,q:"98b1a593-c7a9-409c-b693-ab4c8581181d",t:"Suvni tejaymiz",i:"4e8a0de6-d7e3-4add-9095-dde67d0ceb5b",y:"iOa47mt-sJM",d:"2026-11-23",w:"Jo‘mrakni ochiq qoldirib o‘ynash",r:"Jo‘mrakni yopib, suvni tejash",m:"Suv — ne’mat, uni isrof qilmaymiz."},
- {n:20,q:"a51b43df-432f-4810-8881-8d502066b31b",t:"Qushchalarga mehr",i:"cdd93986-bad1-489a-8edb-ecf731b2fbb4",y:"cpISVcTvEdM",d:"2026-11-24",w:"Non ushoqlarini o‘zi yeb qo‘yish",r:"Qishda qushchalarga don berish",m:"Jonivorlarga mehribon bo‘lamiz."},
- {n:21,q:"7ae634b2-04df-436b-9377-618db8fcf3cf",t:"Bismillah bilan boshlaymiz",i:"35382254-3105-4646-9703-6ee0a718c80c",y:"hAx_20FPAYs",d:"2026-11-25",w:"Shoshib ovqatga qo‘l uzatish",r:"«Bismillah» deb boshlash",m:"Ovqatni «Bismillah» bilan boshlaymiz."},
- {n:22,q:"929ff448-3691-4822-839d-78409f492a43",t:"O‘z vaqtida uxlaymiz",i:"f70e5ec1-e78d-45c5-a0d5-2987618373aa",y:"LSy6mc7DXEY",d:"2026-11-26",w:"Kechasi yostiq bilan sakrab o‘ynash",r:"O‘z vaqtida yotib uxlash",m:"Erta uxlasak, tetik turamiz."},
- {n:23,q:"73d8f6fd-0f18-412a-8681-856ad1c7578b",t:"Mehmonni kutib olamiz",i:"0b1c603d-dc8b-4db3-9fb7-9d48c37535e6",y:"VB40O29TIMc",d:"2026-11-27",w:"Mehmondan parda orqasiga yashirinish",r:"Mehmonni iliq kutib olish",m:"Mehmonni iliq kutib olamiz."}
+ {n:10,q:"1fafff09-a3d5-4f93-a4a7-ac4001a544ab",t:"Salom beramiz",i:"676e992c-0380-4b2b-bbb2-7fdff80f81b0",w:"Buvijonni ko‘rib yashirinib olish",r:"Kattalarga «Assalomu alaykum» deyish",m:"Kattalarga doim birinchi bo‘lib salom beramiz."},
+ {n:11,q:"d97352e7-5ce7-4765-854d-cce9648e0a5b",t:"Qo‘l yuvamiz",i:"6c87df34-1acb-4982-bf26-3ad6c84f9ee1",w:"Kir qo‘l bilan ovqat yeyish",r:"Ovqatdan oldin sovun bilan qo‘l yuvish",m:"Ovqatdan oldin qo‘limizni sovunlab yuvamiz."},
+ {n:12,q:"12f43db1-0bc9-4faf-8b8e-0699640acc0d",t:"Ukaga yordam",i:"8a85bd6f-0dc6-43c7-a65d-5f7471d6bee1",w:"Uka qiynalsa, qarab turish",r:"Ukaga yordam qo‘lini cho‘zish",m:"Ukalarimizga yordam beramiz."},
+ {n:13,q:"cabfb6df-83b6-4660-b599-5a5a4eebeb4d",t:"Yangi do‘st",i:"c5fa377e-a2a2-4e66-b917-7129d7e6fca9",w:"Yolg‘iz bolani chetga qoldirish",r:"Uni o‘yinga chaqirish",m:"Yolg‘iz bolani o‘yinga chaqiramiz."},
+ {n:14,q:"60018207-220b-4211-ab0a-0bfdeb44e16d",t:"Bobojonga joy",i:"f868c604-a93e-408c-b616-1022bead36e8",w:"Joyni bermay o‘tirib olish",r:"Bobojonga joy berish",m:"Kattalarga joy beramiz."},
+ {n:15,q:"466b02fb-4732-4966-b06b-6ee14fa46937",t:"Non — aziz",i:"0e77c967-c5d6-40ad-b88d-0392f370341c",w:"Non bilan o‘ynash",r:"Nonni e’zozlab, ehtiyot qilish",m:"Non — aziz, u bilan o‘ynamaymiz."},
+ {n:16,q:"54e08e6d-490a-4ed5-89dc-4946d126e39f",t:"Birga yig‘ishtiramiz",i:"2682df14-2ff1-46fa-ad30-1d6eafe6a1a4",w:"O‘yinga qochib ketish",r:"Hamma bilan birga yig‘ishtirish",m:"Birga qilsak — tez va oson."},
+ {n:17,q:"c61746f3-214b-4359-bb26-746f327b4524",t:"Tishlarni yuvamiz",i:"a0e4ca85-7304-4a8d-82c6-19a4eb6e0cd4",y:"flrcakT4ATs",d:"2026-11-21",w:"Shokoladdan keyin tish yuvmay uxlash",r:"Ertalab va kechqurun tish yuvish",m:"Ertalab va kechqurun tish yuvamiz."},
+ {n:18,q:"56f6b2b2-4f31-43a9-b952-2ad36d3aecd0",t:"Ruxsat so‘raymiz",i:"44c32ced-8dcd-487c-888e-0171af51411f",y:"RMH3ooCvo0Q",d:"2026-11-22",w:"Opaning qalamlarini so‘ramay olish",r:"«Oisha opa, olsam maylimi?» deb so‘rash",m:"Birovning narsasini so‘rab olamiz."},
+ {n:19,q:"76cf0b33-b8b2-430a-8229-3ba64f57a865",t:"Suvni tejaymiz",i:"4e8a0de6-d7e3-4add-9095-dde67d0ceb5b",y:"iOa47mt-sJM",d:"2026-11-23",w:"Jo‘mrakni ochiq qoldirib o‘ynash",r:"Jo‘mrakni yopib, suvni tejash",m:"Suv — ne’mat, uni isrof qilmaymiz."},
+ {n:20,q:"4fd83674-edf5-467e-a4e3-a45fd353c141",t:"Qushchalarga mehr",i:"cdd93986-bad1-489a-8edb-ecf731b2fbb4",y:"cpISVcTvEdM",d:"2026-11-24",w:"Non ushoqlarini o‘zi yeb qo‘yish",r:"Qishda qushchalarga don berish",m:"Jonivorlarga mehribon bo‘lamiz."},
+ {n:21,q:"e10a2b79-e942-4297-9d08-820fa0ca9ec3",t:"Bismillah bilan boshlaymiz",i:"35382254-3105-4646-9703-6ee0a718c80c",y:"hAx_20FPAYs",d:"2026-11-25",w:"Shoshib ovqatga qo‘l uzatish",r:"«Bismillah» deb boshlash",m:"Ovqatni «Bismillah» bilan boshlaymiz."},
+ {n:22,q:"601d81ff-364d-4802-ab35-75a07763780b",t:"O‘z vaqtida uxlaymiz",i:"f70e5ec1-e78d-45c5-a0d5-2987618373aa",y:"LSy6mc7DXEY",d:"2026-11-26",w:"Kechasi yostiq bilan sakrab o‘ynash",r:"O‘z vaqtida yotib uxlash",m:"Erta uxlasak, tetik turamiz."},
+ {n:23,q:"2d105d41-5d53-4286-bcf1-fc71eba2a6f0",t:"Mehmonni kutib olamiz",i:"0b1c603d-dc8b-4db3-9fb7-9d48c37535e6",y:"VB40O29TIMc",d:"2026-11-27",w:"Mehmondan parda orqasiga yashirinish",r:"Mehmonni iliq kutib olish",m:"Mehmonni iliq kutib olamiz."}
 ];
 EPS.forEach(function(e){ e.img = CDN + e.i + ".jpg"; e.qimg = CDN + e.q + ".jpg"; });
 
@@ -345,7 +356,7 @@ function qShow(){
   $("#qscore").textContent="⭐ "+qok; $("#qprog").style.width=(qi/QN*100)+"%";
   if (qi>=QN) return qEnd();
   var e=Q[qi], opts=shuffle([{t:e.r,ok:true},{t:e.w,ok:false}]);
-  $("#qbox").innerHTML='<div class="qcard"><img src="'+e.qimg+'" alt=""><div class="qt">Qaysi biri to‘g‘ri?</div><div class="qs">«'+e.t+'» · '+(qi+1)+'/'+QN+'</div></div><div class="opts">'+
+  $("#qbox").innerHTML='<div class="qimg"><div class="bg" style="background-image:url('+e.qimg+')"></div><img src="'+e.qimg+'" alt=""><span class="tag">'+(qi+1)+'/'+QN+' · '+e.t+'</span></div><div class="opts">'+
     opts.map(function(o,i){ return '<button class="opt" data-i="'+i+'"><span class="ic">'+(i?"B":"A")+'</span>'+o.t+'</button>'; }).join("")+'</div><div id="qafter"></div>';
   $$(".opt").forEach(function(b){ b.onclick=function(){
     if ($("#qafter").innerHTML) return;
@@ -354,7 +365,8 @@ function qShow(){
     if (o.ok){ qok++; hap("ok"); } else hap("err");
     $("#qafter").innerHTML='<div class="note">'+(o.ok?"✅ To‘g‘ri! ":"🙂 Yana o‘ylab ko‘r: ")+e.m+'</div><button class="btn" id="qnext">'+(qi+1<QN?"Keyingi savol":"Natijani ko‘rish")+'</button>';
     $("#qscore").textContent="⭐ "+qok;
-    $("#qnext").onclick=function(){ qi++; qShow(); };
+    $("#qnext").onclick=function(){ qi++; qShow(); window.scrollTo(0,0); };
+    setTimeout(function(){ $("#qnext").scrollIntoView({behavior:"smooth",block:"end"}); },60);
   }; });
 }
 function qEnd(){
