@@ -1,0 +1,25 @@
+name: Fetch media
+on:
+  push:
+    paths: ["promo/fetch.txt"]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          while read -r name url; do
+            [ -z "$name" ] && continue
+            curl -sSfL -o "promo/$name" "$url"
+            ls -la "promo/$name"
+          done < promo/fetch.txt
+      - name: Commit
+        run: |
+          git config user.name "odobim-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add promo
+          git commit -m "promo media" || exit 0
+          git push
