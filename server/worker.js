@@ -89,6 +89,7 @@ async function saveUser(env, from) {
   if (!old) {
     const list = await getJ(env, "users", []);
     if (!list.includes(from.id)) { list.push(from.id); await putJ(env, "users", list); }
+    const jk = "st:j:" + tday(0); await env.DB.put(jk, String(Number(await env.DB.get(jk) || 0) + 1));
   }
   return { u, isNew: !old };
 }
@@ -160,6 +161,7 @@ async function onMessage(env, m) {
     if (!r.ok) await tg(env, "sendMessage", { chat_id: id, text: WELCOME(m.from.first_name), reply_markup: appButton() });
     return;
   }
+  if (id === ADMIN_ID && (text.startsWith("/stat") || text === "📊 Statistika")) return sendStat(env);
   if (text.startsWith("/buyurtma")) {
     return tg(env, "sendMessage", { chat_id: id, text: "🎬 Farzandingiz Halili va opalari bilan multfilm qahramoni bo‘ladi!\n\nPastdagi tugmani bosing: tarifni tanlang, farzandingiz haqida yozing va rasmini qo‘shing 📷", reply_markup: appButton("🎬 Buyurtma berish", "#order") });
   }
@@ -174,9 +176,63 @@ async function onMessage(env, m) {
   return tg(env, "sendMessage", { chat_id: id, text: "O‘yinlarni ochish uchun pastdagi tugmani bosing 👇\n\n" + HELP, reply_markup: appButton() });
 }
 
+
+/* ---------- admin statistikasi ---------- */
+const tday = (back) => new Date(Date.now() + 5 * 3600e3 - back * 864e5).toISOString().slice(0, 10); // Toshkent sanasi
+async function statText(env) {
+  const users = await getJ(env, "users", []);
+  const days = await Promise.all(Array.from({ length: 30 }, (_, i) => env.DB.get("st:j:" + tday(i))));
+  const d = days.map(x => Number(x || 0)), sum = n => d.slice(0, n).reduce((a, b) => a + b, 0);
+  const seq = Number(await env.DB.get("orderSeq") || 100);
+  const ids = []; for (let i = Math.max(101, seq - 299); i <= seq; i++) ids.push(i);
+  const orders = (await Promise.all(ids.map(i => getJ(env, "o:" + i, null)))).filter(Boolean);
+  const month = tday(0).slice(0, 7), today = tday(0);
+  const dateOf = t => new Date(t + 5 * 3600e3).toISOString().slice(0, 10);
+  const PAID = o => o.status === "paid" || o.status === "delivered";
+  const by = {}; let rev = 0, revM = 0, revT = 0;
+  for (const k of Object.keys(TARIFFS)) by[k] = { n: 0, paid: 0, sum: 0 };
+  const st = { new: 0, check: 0, paid: 0, delivered: 0, rejected: 0 };
+  for (const o of orders) {
+    const b = by[o.tariff] || (by[o.tariff] = { n: 0, paid: 0, sum: 0 }); b.n++;
+    st[o.status] = (st[o.status] || 0) + 1;
+    if (PAID(o)) { b.paid++; b.sum += o.price; rev += o.price; const pd = dateOf(o.paidAt || o.at); if (pd.slice(0, 7) === month) revM += o.price; if (pd === today) revT += o.price; }
+  }
+  const paidN = orders.filter(PAID).length;
+  const conv = users.length ? (paidN / users.length * 100).toFixed(1) : "0";
+  const last = orders.slice(-5).reverse().map(o => {
+    const ic = { new: "🆕", check: "🧾", paid: "✅", delivered: "📦", rejected: "❌" }[o.status] || "•";
+    return `${ic} #${o.id} ${esc(o.child)} — ${(TARIFFS[o.tariff] || {}).name || o.tariff}, ${fmt(o.price)}`;
+  }).join("\n") || "—";
+  return `📊 <b>Odobim statistikasi</b>  <i>(${today})</i>
+
+👥 <b>Foydalanuvchilar:</b> ${users.length} ta
+➕ Yangi qo‘shilganlar:
+   bugun <b>${d[0]}</b> · kecha ${d[1]} · 7 kun ${sum(7)} · 30 kun ${sum(30)}
+
+🛒 <b>Buyurtmalar:</b> ${orders.length} ta
+   🆕 to‘lanmagan ${st.new || 0} · 🧾 chek kutmoqda ${st.check || 0}
+   ✅ to‘langan ${st.paid || 0} · 📦 topshirilgan ${st.delivered || 0} · ❌ rad ${st.rejected || 0}
+
+📦 <b>Mahsulotlar bo‘yicha</b> (to‘langan / jami):
+${Object.keys(TARIFFS).map(k => `   ${TARIFFS[k].name}: ${by[k].paid} / ${by[k].n} — ${fmt(by[k].sum)} so‘m`).join("\n")}
+
+💰 <b>Tushum:</b>
+   bugun ${fmt(revT)} · shu oy ${fmt(revM)} · jami <b>${fmt(rev)} so‘m</b>
+📈 Sotib olganlar: ${conv}% (foydalanuvchilarga nisbatan)
+
+🕑 <b>Oxirgi buyurtmalar:</b>
+${last}`;
+}
+async function sendStat(env, edit) {
+  const text = await statText(env), reply_markup = { inline_keyboard: [[{ text: "🔄 Yangilash", callback_data: "stat:0" }]] };
+  if (edit) return tg(env, "editMessageText", { chat_id: ADMIN_ID, message_id: edit, parse_mode: "HTML", text, reply_markup });
+  return tg(env, "sendMessage", { chat_id: ADMIN_ID, parse_mode: "HTML", text, reply_markup });
+}
+
 async function onCallback(env, q) {
   const [act, oid] = String(q.data || "").split(":");
   if (q.from.id !== ADMIN_ID) return tg(env, "answerCallbackQuery", { callback_query_id: q.id });
+  if (act === "stat") { await sendStat(env, q.message && q.message.message_id); return tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Yangilandi ✅" }); }
   const o = await getJ(env, "o:" + oid, null);
   if (!o) return tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Buyurtma topilmadi" });
   if (act === "pay") {
@@ -356,6 +412,9 @@ const REMINDERS = [
 const tashkentDate = () => new Date(Date.now() + 5 * 3600e3).toISOString().slice(0, 10);
 
 async function scheduled(event, env) {
+  if (event.cron === "0 16 * * *") { // 21:00 Toshkent — kunlik hisobot adminga
+    return sendStat(env);
+  }
   if (event.cron === "0 14 * * *") { // 19:00 Toshkent
     const text = REMINDERS[new Date().getUTCDate() % REMINDERS.length];
     await startJob(env, { kind: "remind", text, markup: appButton("📒 Kundalikni ochish", "#diary") });
