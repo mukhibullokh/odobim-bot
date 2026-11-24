@@ -229,6 +229,14 @@ img{display:block;max-width:100%}
 .allw{display:flex;justify-content:space-between;align-items:center;width:100%;margin:-8px 0 18px;background:#fff;border-radius:16px;padding:11px 16px;font-family:Fredoka;font-weight:600;font-size:16px;box-shadow:0 4px 0 rgba(27,37,89,.12)}
 .allw span{font-size:22px;color:var(--muted)}
 .g.purple>img,.g.green>img{object-position:50% 0}
+.ertakc{position:relative;display:block;width:100%;border-radius:var(--r);overflow:hidden;margin-bottom:14px;border:4px solid #fff;background:#6a2bd8;box-shadow:0 7px 0 #4a1a9c,0 12px 24px rgba(74,26,156,.3);text-align:left;transition:transform .12s}
+.ertakc:active{transform:translateY(4px) scale(.98)}
+.ertakc img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:50% 20%;display:block}
+.ertakc .et{position:absolute;left:0;right:0;bottom:0;padding:50px 14px 13px;background:linear-gradient(transparent,rgba(60,15,130,.92) 70%);color:#fff}
+.ertakc b{font-family:Fredoka;font-size:26px;font-weight:700;display:block;line-height:1.05}
+.ertakc small{font-size:13.5px}
+.ertakc .new{position:absolute;right:10px;top:10px;background:var(--gold);color:#5a3400;font-family:Fredoka;font-weight:700;font-size:13px;padding:4px 10px;border-radius:99px;box-shadow:0 3px 0 var(--gold2);animation:pulse 1.6s infinite}
+.ertakc .price{position:absolute;left:10px;top:10px;background:#fff;color:#4a1a9c;font-family:Fredoka;font-weight:700;font-size:14px;padding:4px 11px;border-radius:99px;box-shadow:0 3px 0 rgba(0,0,0,.15)}
 .parents{font-family:Fredoka;font-size:19px;font-weight:600;margin:26px 4px 10px;color:var(--ink)}
 @keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .g:nth-of-type(2){animation-delay:.06s}.g:nth-of-type(3){animation-delay:.12s}.g:nth-of-type(4){animation-delay:.18s}
@@ -286,6 +294,12 @@ img{display:block;max-width:100%}
     <span class="new">YANGI</span>
     <div class="ot"><b>🎬 Farzandingiz Odobimda!</b><small>Halili va opalari bilan maxsus multfilm</small></div>
   </button>
+  <button class="ertakc" data-go="order" data-t="ertak">
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/2b58a5a8-d716-4635-b281-ca4a58c96a9d.jpg" alt="">
+    <span class="new">YANGI</span>
+    <span class="price">59 000 so‘m</span>
+    <div class="et"><b>📖 Odobim ertagi</b><small>Farzandingiz ertak qahramoni! Ovozli komiks-ertak</small></div>
+  </button>
   <button class="share" id="share">🤝 Do‘stlaringga ham yubor</button>
   <div class="foot">
     Odobim — bolalar uchun tarbiyaviy multfilmlar
@@ -332,12 +346,13 @@ img{display:block;max-width:100%}
 
 <!-- BUYURTMA -->
 <section class="view" id="v-order">
-  <div class="bar"><button class="back" data-back>‹</button><h2>Farzandim uchun multfilm</h2></div>
-  <video class="ovid" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/cbed4594-7be8-495e-901f-f3d4d523bc7b.mp4" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/395bc855-959c-4e51-b229-1e40487a3ea8.jpg" controls playsinline preload="none"></video>
-  <p class="small">Namuna: Aziz Halili va opalari bilan birga o‘ynab, yig‘ishtirishni o‘rgandi. Sizning farzandingiz ham xuddi shunday multfilm qahramoni bo‘ladi!</p>
+  <div class="bar"><button class="back" data-back>‹</button><h2 id="o-h">Farzandim uchun multfilm</h2></div>
+  <video class="ovid" id="o-vid" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/cbed4594-7be8-495e-901f-f3d4d523bc7b.mp4" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/395bc855-959c-4e51-b229-1e40487a3ea8.jpg" controls playsinline preload="none"></video>
+  <p class="small" id="o-vtxt">Namuna: Aziz Halili va opalari bilan birga o‘ynab, yig‘ishtirishni o‘rgandi. Sizning farzandingiz ham xuddi shunday multfilm qahramoni bo‘ladi!</p>
   <div id="ofrm">
   <div class="sect">1. Tarifni tanlang</div>
   <div class="tars" id="otars">
+    <button class="tar" data-t="ertak"><span class="em">📖</span><div><b>Ovozli ertak-komiks</b><small>5 betlik ertak, farzandingiz qahramon. Video (Dilzoda ovozida) va PDF</small></div><i>59 000</i></button>
     <button class="tar on" data-t="oila"><span class="em">🎁</span><div><b>Oilaviy</b><small>Multfilm faqat sizga beriladi, hech qayerga qo‘yilmaydi</small></div><i>149 000</i></button>
     <button class="tar" data-t="dost"><span class="em">⭐</span><div><b>Odobim do‘sti</b><small>Multfilm sizga beriladi va Odobim YouTube hamda Instagram sahifalariga qo‘yiladi</small></div><i>299 000</i></button>
   </div>
@@ -350,7 +365,7 @@ img{display:block;max-width:100%}
   <div class="fld"><span>Farzandingiz rasmi (ixtiyoriy, 3 tagacha)</span>
     <div class="phs" id="o-phs"><label class="phadd">📷<small>Rasm qo‘shish</small><input type="file" id="o-file" accept="image/*" multiple></label></div>
     <small class="phnote">Yuzi aniq ko‘ringan rasm bo‘lsin.</small></div>
-  <label class="chk" id="o-pwrap" hidden><input type="checkbox" id="o-pconsent"><span>Men ushbu bolaning ota-onasi (vasiysi)man. Rasmini Odobimga faqat multfilm qahramonini yasash uchun berishga roziman. Rasm boshqa joyda ishlatilmaydi, hech kimga berilmaydi va ish tugagach o‘chiriladi.</span></label>
+  <label class="chk" id="o-pwrap" hidden><input type="checkbox" id="o-pconsent"><span>Men ushbu bolaning ota-onasi (vasiysi)man. Rasmini Odobimga faqat multfilm yoki ertak qahramonini yasash uchun berishga roziman. Rasm boshqa joyda ishlatilmaydi, hech kimga berilmaydi va ish tugagach o‘chiriladi.</span></label>
   <label class="fld"><span>Ko‘rinishi (soch, kiyim, rangi)</span><input id="o-look" maxlength="200" placeholder="Jingalak soch, ko‘k futbolka"></label>
   <label class="fld"><span>Multfilm mavzusi</span><select id="o-topic">
     <option>Salom berish</option><option>Tish yuvish</option><option>O‘yinchoqlarni yig‘ishtirish</option><option>Ota-onaga yordam berish</option>
@@ -358,7 +373,7 @@ img{display:block;max-width:100%}
   <label class="fld"><span>Izoh (ixtiyoriy)</span><textarea id="o-note" rows="2" maxlength="300" placeholder="Masalan: tish yuvishni yoqtirmaydi, mashinani yaxshi ko‘radi"></textarea></label>
   <label class="chk" id="o-cwrap" hidden><input type="checkbox" id="o-consent"><span>Roziman: multfilm Odobim YouTube va Instagram sahifalarida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.</span></label>
   <button class="btn pink" id="o-send">🎬 Buyurtma berish</button>
-  <p class="small">Buyurtmadan keyin to‘lov shu yerning o‘zida: kartaga o‘tkazasiz va chekni yuklaysiz. Multfilmda faqat Halili, Oisha, Maryam, Rayyona va sizning farzandingiz bo‘ladi.</p>
+  <p class="small">Buyurtmadan keyin to‘lov shu yerning o‘zida: kartaga o‘tkazasiz va chekni yuklaysiz. Multfilm va ertakda faqat Halili, Oisha, Maryam, Rayyona va sizning farzandingiz bo‘ladi.</p>
   </div>
   <div id="odone"></div>
 </section>
@@ -383,7 +398,7 @@ img{display:block;max-width:100%}
 
 <script>
 /* yangi versiya chiqsa, eski keshni chetlab o'tish */
-(function(){ var V=11; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
+(function(){ var V=12; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
   if(j&&j.v>V){ var k="odv"+j.v; if(!sessionStorage.getItem(k)){ sessionStorage.setItem(k,1); location.replace(location.pathname+"?v="+j.v+"&t="+Date.now()+location.hash); } } }).catch(function(){}); }catch(e){} })();
 
 (function(){
@@ -589,7 +604,13 @@ function wRender(){
 
 /* ---------- BUYURTMA ---------- */
 var API="https://odobim-bot.muhibulloh2405.workers.dev", oT="oila";
-$$("#otars .tar").forEach(function(b){ b.onclick=function(){ $$("#otars .tar").forEach(function(x){x.classList.remove("on");}); b.classList.add("on"); oT=b.dataset.t; $("#o-cwrap").hidden=oT!=="dost"; hap(); }; });
+var OV={ertak:{v:"https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/1f34ad4c-e6de-4380-b9c7-f2c198a99127.mp4",p:"https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/2b58a5a8-d716-4635-b281-ca4a58c96a9d.jpg",h:"Odobim ertagi",t:"Namuna: «Aziz va Odobim do‘stlari — Sehrli so‘z». 5 betlik komiks-ertak, Dilzoda opa o‘qib beradi. Sizning farzandingiz ham shunday ertak qahramoni bo‘ladi!"},
+ mult:{v:"https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/cbed4594-7be8-495e-901f-f3d4d523bc7b.mp4",p:"https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/395bc855-959c-4e51-b229-1e40487a3ea8.jpg",h:"Farzandim uchun multfilm",t:"Namuna: Aziz Halili va opalari bilan birga o‘ynab, yig‘ishtirishni o‘rgandi. Sizning farzandingiz ham xuddi shunday multfilm qahramoni bo‘ladi!"}};
+function tarSel(t){ var k=t==="ertak"?"ertak":"mult", cur=oT==="ertak"?"ertak":"mult"; oT=t;
+  $$("#otars .tar").forEach(function(x){x.classList.toggle("on",x.dataset.t===t);}); $("#o-cwrap").hidden=t!=="dost";
+  var v=$("#o-vid"); if(k!==cur||!v.dataset.k){ v.pause(); v.dataset.k=k; v.src=OV[k].v; v.poster=OV[k].p; } $("#o-h").textContent=OV[k].h; $("#o-vtxt").textContent=OV[k].t; }
+$$("#otars .tar").forEach(function(b){ b.onclick=function(){ tarSel(b.dataset.t); hap(); }; });
+$$("[data-go='order']").forEach(function(b){ b.addEventListener("click",function(){ tarSel(b.dataset.t||"oila"); }); });
 var oPh=[];
 function phRender(){
   var box=$("#o-phs"); $$("#o-phs .ph").forEach(function(x){x.remove();});
@@ -609,7 +630,7 @@ $("#o-file").onchange=function(){
   var fs=[].slice.call(this.files||[]).slice(0,3-oPh.length); this.value="";
   fs.forEach(function(f){ shrink(f,function(d){ if(d&&oPh.length<3){ oPh.push(d); phRender(); } }); });
 };
-var PRICE={oila:149000,dost:299000}, CARDN="8600 1404 0140 4463", oId=0, oTimer=0;
+var PRICE={ertak:59000,oila:149000,dost:299000}, CARDN="8600 1404 0140 4463", oId=0, oTimer=0;
 function post(u,b){ return fetch(API+u,{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify(b)}).then(function(r){return r.json();}); }
 function payShow(id){
   oId=id; var sum=PRICE[oT].toLocaleString("ru-RU").replace(/,/g," ");
@@ -757,7 +778,7 @@ $("#p-send").onclick=function(){
    .then(function(){ setTimeout(function(){ b.disabled=false; b.textContent="📤 Oilamga yuborish"; },3000); });
 };
 
-DB.load(function(){ homeRender(); if (location.hash && $("#v-"+location.hash.slice(1))) go(location.hash.slice(1)); });
+DB.load(function(){ homeRender(); var h=location.hash.slice(1); if (h==="ertak"){ go("order"); tarSel("ertak"); } else if (h && $("#v-"+h)) go(h); });
 })();
 </script>
 </body>

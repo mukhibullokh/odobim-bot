@@ -4,18 +4,21 @@
 
 const APP_URL = "https://mukhibullokh.github.io/odobim-bot/";
 const EPISODES_URL = APP_URL + "episodes.json";
-const APP_VER = "?v=11";
+const APP_VER = "?v=12";
 const BANNER = "https://d8j0ntlcm91z4.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/hf_20261124_105810_103267b5-c68a-4097-b182-6e4db592fc25.png";
 const BATCH = 40;
 const ADMIN_ID = 5991137115;            // buyurtmalar va cheklar shu Telegram akkauntga keladi
-const PHOTO_CONSENT = "Men ushbu bolaning ota-onasi (vasiysi)man. Rasmini Odobimga faqat multfilm qahramonini yasash uchun berishga roziman. Rasm boshqa joyda ishlatilmaydi, hech kimga berilmaydi va ish tugagach o‘chiriladi.";
+const PHOTO_CONSENT = "Men ushbu bolaning ota-onasi (vasiysi)man. Rasmini Odobimga faqat multfilm yoki ertak qahramonini yasash uchun berishga roziman. Rasm boshqa joyda ishlatilmaydi, hech kimga berilmaydi va ish tugagach o‘chiriladi.";
 const YT_CONSENT = "Roziman: multfilm Odobim YouTube va Instagram sahifalarida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.";
 const CARD = "8600 1404 0140 4463";      // Sisters Cooking'dagi to'lov kartasi
 const CARD_OWNER = "Farhodov Muhibulloh";
 const TARIFFS = {
-  oila: { name: "🎁 Oilaviy", price: 149000, desc: "Multfilm faqat sizning oilangizga beriladi" },
-  dost: { name: "⭐ Odobim do‘sti", price: 299000, desc: "Multfilm sizga beriladi va Odobim YouTube hamda Instagram sahifalariga qo‘yiladi" }
+  ertak: { name: "📖 Ovozli ertak-komiks", price: 59000, desc: "5 betlik ertak: video (Dilzoda ovozida) va PDF", what: "ertak", eta: "bir necha soat" },
+  oila: { name: "🎁 Oilaviy", price: 149000, desc: "Multfilm faqat sizning oilangizga beriladi", what: "multfilm", eta: "1–2 kun" },
+  dost: { name: "⭐ Odobim do‘sti", price: 299000, desc: "Multfilm sizga beriladi va Odobim YouTube hamda Instagram sahifalariga qo‘yiladi", what: "multfilm", eta: "1–2 kun" }
 };
+const WHAT = o => (TARIFFS[o.tariff] || TARIFFS.oila).what;
+const ETA = o => (TARIFFS[o.tariff] || TARIFFS.oila).eta;
 const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); // bir daqiqada yuboriladigan xabarlar soni (bepul tarif cheklovi ichida)
 
@@ -116,7 +119,7 @@ const HELP =
 `🎮 /start — o‘yinlarni ochish
 🔔 /eslatma — kunlik eslatmani yoqish yoki o‘chirish
 📺 /yangiliklar — yangi multfilm xabarini yoqish yoki o‘chirish
-🎬 /buyurtma — farzandingiz uchun maxsus multfilm`;
+🎬 /buyurtma — farzandingiz uchun maxsus multfilm yoki ertak`;
 
 async function onMessage(env, m) {
   if (!m.from || m.from.is_bot || !m.chat || m.chat.type !== "private") return;
@@ -131,10 +134,10 @@ async function onMessage(env, m) {
     if (mm) {
       const o = await getJ(env, "o:" + mm[1], null);
       if (!o) return tg(env, "sendMessage", { chat_id: id, text: "❗ #" + mm[1] + " buyurtma topilmadi." });
-      await tg(env, "sendMessage", { chat_id: o.uid, text: `🎉 ${o.child} uchun multfilm tayyor! Marhamat, tomosha qiling 🎬` });
-      const r = await tg(env, "copyMessage", { chat_id: o.uid, from_chat_id: id, message_id: m.message_id, caption: `🎬 ${o.child} va Odobim — maxsus multfilm 💛\nDo‘stlaringga ham yubor 👇 @odobimbot` });
+      if (o.status !== "delivered") await tg(env, "sendMessage", { chat_id: o.uid, text: `🎉 ${o.child} uchun ${WHAT(o)} tayyor! Marhamat, ${WHAT(o) === "ertak" ? "o‘qing va tinglang 📖" : "tomosha qiling 🎬"}` });
+      const r = await tg(env, "copyMessage", { chat_id: o.uid, from_chat_id: id, message_id: m.message_id, caption: `${WHAT(o) === "ertak" ? "📖" : "🎬"} ${o.child} va Odobim — maxsus ${WHAT(o)} 💛\nDo‘stlaringga ham yubor 👇 @odobimbot` });
       if (r.ok) { o.status = "delivered"; await putJ(env, "o:" + o.id, o); }
-      return tg(env, "sendMessage", { chat_id: id, text: r.ok ? `✅ #${o.id} multfilm ${o.parent}ga yuborildi.` : "❗ Yuborib bo‘lmadi: " + (r.description || "") });
+      return tg(env, "sendMessage", { chat_id: id, text: r.ok ? `✅ #${o.id} ${WHAT(o)} ${o.parent}ga yuborildi.` : "❗ Yuborib bo‘lmadi: " + (r.description || "") });
     }
   }
   // Buyurtmachi chek yoki bola rasmini yuborsa — adminga yetkaziladi
@@ -153,7 +156,7 @@ async function onMessage(env, m) {
     const arg = text.split(" ")[1] || "";
     const mm = arg.match(/^(?:of|ref)_(\d+)$/);
     if (mm) await addFriend(env, id, Number(mm[1]));
-    const r = await tg(env, "sendPhoto", { chat_id: id, photo: BANNER, caption: WELCOME(m.from.first_name), reply_markup: { inline_keyboard: [appButton().inline_keyboard[0], appButton("🎬 Farzandim uchun multfilm", "#order").inline_keyboard[0]] } });
+    const r = await tg(env, "sendPhoto", { chat_id: id, photo: BANNER, caption: WELCOME(m.from.first_name), reply_markup: { inline_keyboard: [appButton().inline_keyboard[0], appButton("🎬 Farzandim uchun multfilm", "#order").inline_keyboard[0], appButton("📖 Odobim ertagi — 59 000", "#ertak").inline_keyboard[0]] } });
     if (!r.ok) await tg(env, "sendMessage", { chat_id: id, text: WELCOME(m.from.first_name), reply_markup: appButton() });
     return;
   }
@@ -178,7 +181,7 @@ async function onCallback(env, q) {
   if (!o) return tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Buyurtma topilmadi" });
   if (act === "pay") {
     o.status = "paid"; o.paidAt = Date.now(); await putJ(env, "o:" + o.id, o);
-    await tg(env, "sendMessage", { chat_id: o.uid, text: `🎉 To‘lov tasdiqlandi! ${o.child} uchun multfilm tayyorlanmoqda. 1–2 kun ichida shu chatga yuboramiz 💛\n\nFarzandingizning rasmini hali yubormagan bo‘lsangiz, hozir yuborishingiz mumkin.` });
+    await tg(env, "sendMessage", { chat_id: o.uid, text: `🎉 To‘lov tasdiqlandi! ${o.child} uchun ${WHAT(o)} tayyorlanmoqda. ${ETA(o)} ichida shu chatga yuboramiz 💛\n\nFarzandingizning rasmini hali yubormagan bo‘lsangiz, hozir yuborishingiz mumkin.` });
   } else if (act === "rej") {
     o.status = "rejected"; await putJ(env, "o:" + o.id, o);
     await tg(env, "sendMessage", { chat_id: o.uid, text: `❌ Chek tasdiqlanmadi. Iltimos, to‘lovni tekshirib, chekni qayta yuboring yoki savolingizni shu yerga yozing.` });
@@ -281,7 +284,7 @@ ${CARD_OWNER}
 📸 Keyin to‘lov chekini (skrinshot) ilovaning o‘zida yoki shu chatga yuboring.
 ${o.photos ? "🧒 Farzandingiz rasmi qabul qilindi — qahramon unga o‘xshab chiqadi. Rasm faqat qahramon yasash uchun ishlatiladi va ish tugagach o‘chiriladi." : "🧒 Xohlasangiz, farzandingizning rasmini ham yuboring — qahramon unga o‘xshab chiqadi. Rasm faqat qahramon yasash uchun ishlatiladi va ish tugagach o‘chiriladi."}
 
-⏳ To‘lov tasdiqlangach, multfilm 1–2 kun ichida tayyor bo‘ladi.` });
+⏳ To‘lov tasdiqlangach, ${WHAT(o)} ${ETA(o)} ichida tayyor bo‘ladi.` });
     await tg(env, "sendMessage", { chat_id: ADMIN_ID, parse_mode: "HTML", text:
 `🆕 <b>Yangi buyurtma #${seq}</b>
 ${TARIFFS[t].name} — ${fmt(o.price)} so‘m${o.consent ? "\n✅ YouTube va Instagram’ga qo‘yishga rozi" : ""}
@@ -293,7 +296,7 @@ ${TARIFFS[t].name} — ${fmt(o.price)} so‘m${o.consent ? "\n✅ YouTube va Ins
 👤 Ota-ona: ${esc(o.parent)}${o.username ? " @" + esc(o.username) : ""} (id ${id})
 🖼 Rasm: ${o.photos ? o.photos + " ta (pastda)" : "yo‘q"}
 
-Chek kelsa, shu yerga yuboraman. Tayyor multfilmni yuborish: videoni <code>#${seq}</code> izohi bilan shu botga yuboring.` });
+Chek kelsa, shu yerga yuboraman. Tayyor ${WHAT(o)}ni yuborish: video yoki PDF faylni <code>#${seq}</code> izohi bilan shu botga yuboring.` });
     for (let i = 0; i < photos.length; i++) await tgPhoto(env, ADMIN_ID, photos[i], `#${seq} · ${o.child} · rasm ${i + 1}`);
     if (o.photoConsent || o.ytConsent) {
       const who = `${esc(o.parent)}${o.username ? " (@" + esc(o.username) + ")" : ""}, Telegram ID ${id}`;
