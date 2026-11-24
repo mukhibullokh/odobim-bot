@@ -5,4 +5,4 @@
    bot         — Telegram bot username'i (@siz), «Do'stga yuborish» havolasi uchun (faqat server bo'lsa kerak). */
 window.ODOBIM_ONLY = true;
 window.ODOBIM_KEY = "odobim_game_v1";
-window.MUHIBZIYO_CONFIG = {api: "", bot: ""};
+window.MUHIBZIYO_CONFIG = {api: "https://odobim-bot.muhibulloh2405.workers.dev", bot: "odobimbot"};
