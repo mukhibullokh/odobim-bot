@@ -4,7 +4,7 @@
 
 const APP_URL = "https://mukhibullokh.github.io/odobim-bot/";
 const EPISODES_URL = APP_URL + "episodes.json";
-const APP_VER = "?v=9";
+const APP_VER = "?v=10";
 const BANNER = "https://d8j0ntlcm91z4.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/hf_20261124_105810_103267b5-c68a-4097-b182-6e4db592fc25.png";
 const BATCH = 40;
 const ADMIN_ID = 5991137115;            // buyurtmalar va cheklar shu Telegram akkauntga keladi
@@ -221,6 +221,12 @@ async function api(req, env, path) {
     }
     rows.sort((a, b) => b.tr - a.tr);
     return json({ ok: true, rows: rows.slice(0, 50), friends: friends.length });
+  }
+  if (path === "/api/paint" && req.method === "POST") {
+    const name = String(body.name || "").replace(/[<>]/g, "").slice(0, 60);
+    const r = await tgPhoto(env, id, body.photo, `🎨 Men bo‘yadim! «${name}»\n\nOdobim’da sen ham bo‘ya 👉 @odobimbot`,
+      { inline_keyboard: [[{ text: "📤 Oilamga yuborish", url: "https://t.me/share/url?url=" + encodeURIComponent("https://t.me/odobimbot") + "&text=" + encodeURIComponent("🎨 Odobim’da rasm bo‘yadim! Sen ham bo‘ya:") }], [{ text: "🎨 Yana bo‘yash", web_app: { url: APP_URL + APP_VER + "#boyash" } }]] });
+    return json({ ok: !!r.ok });
   }
   if (path === "/api/order/receipt" && req.method === "POST") {
     const o = await getJ(env, "o:" + Number(body.id), null);

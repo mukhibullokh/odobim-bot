@@ -187,6 +187,26 @@ img{display:block;max-width:100%}
 .pup input{position:absolute;inset:0;width:100%;height:100%;opacity:0}
 .btn.pink{background:#ff5fa2;box-shadow:0 5px 0 #c2306f}
 .small{font-size:12.5px;color:var(--muted);text-align:center;margin:10px 4px;line-height:1.35}
+/* bo'yash */
+.paint{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin-top:14px;padding:10px 14px 10px 10px;border-radius:var(--r);border:4px solid #fff;background:linear-gradient(135deg,#ff9a3c,#ff5fa2 55%,#7d5cff);box-shadow:0 7px 0 #b8357a,0 12px 22px rgba(27,37,89,.15);color:#fff;text-align:left;transition:transform .12s}
+.paint:active{transform:translateY(4px) scale(.98)}
+.paint img{width:74px;height:96px;object-fit:cover;border-radius:14px;background:#fff;border:3px solid #fff;flex:none;transform:rotate(-4deg)}
+.paint b{display:block;font-family:Fredoka;font-size:22px;line-height:1.1}
+.paint small{font-size:13.5px;opacity:.95}
+.paint em{position:absolute;right:10px;top:10px;font-style:normal;background:#fff;color:var(--ink);font-family:Fredoka;font-size:13px;padding:3px 9px;border-radius:99px}
+.pgal{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pgal button{position:relative;background:#fff;border-radius:20px;padding:8px;box-shadow:0 5px 0 rgba(27,37,89,.12)}
+.pgal img{width:100%;aspect-ratio:660/876;object-fit:contain;display:block;border-radius:12px}
+.pgal span{display:block;font-family:Fredoka;font-weight:600;font-size:14.5px;margin-top:6px}
+.pgal i{position:absolute;right:10px;top:10px;font-style:normal;font-size:20px}
+.pwrap{position:relative;background:#fff;border-radius:20px;padding:6px;box-shadow:0 5px 0 rgba(27,37,89,.12);touch-action:none}
+#pc{width:100%;display:block;border-radius:14px;touch-action:none}
+.pal{display:grid;grid-template-columns:repeat(8,1fr);gap:7px;margin:12px 0 8px}
+.pal button{aspect-ratio:1;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 0 rgba(27,37,89,.25)}
+.pal button.on{transform:scale(1.18);box-shadow:0 0 0 3px var(--ink)}
+.ptools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ptools button{background:#fff;border-radius:14px;padding:9px 4px;font-family:Fredoka;font-weight:600;font-size:14px;box-shadow:0 3px 0 rgba(27,37,89,.12)}
+.ptools button.on{background:var(--ink);color:#fff}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
 </head>
@@ -218,6 +238,7 @@ img{display:block;max-width:100%}
     <button class="c4 green" data-go="diary"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/46ea1039-2fdf-4ef5-bd32-f2d18a590b16.jpg" alt=""><em id="dtag">0 ⭐</em><span>Yaxshi ishlar</span></button>
     <button class="c4 sky" data-go="watch"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/e24d2d04-e138-4d17-8eb8-4efdcae5b5f8.jpg" alt=""><span>Multfilmlar</span></button>
   </div>
+  <button class="paint" data-go="boyash"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/f2fed831-2504-4407-96c0-3c6ea5cbd7f3.png" alt=""><div><b>🎨 Rasm bo‘yash</b><small>Halili va opalarini o‘zing bo‘ya!</small></div><em id="ptag">0/6</em></button>
   <button class="today" data-go="diary"><span class="em">🌟</span><div><b><span>Bugungi yaxshi ishlar</span><span id="htoday">0/8</span></b><div class="tbar"><i id="htbar"></i></div></div></button>
   <button class="share" id="share">🤝 Do‘stlaringga ham yubor</button>
   <div class="foot">
@@ -296,12 +317,27 @@ img{display:block;max-width:100%}
   <div id="odone"></div>
 </section>
 
+<!-- BO'YASH -->
+<section class="view" id="v-boyash">
+  <div class="bar"><button class="back" data-back>‹</button><h2 id="ptitle">Rasm bo‘yash</h2></div>
+  <div id="pgalw"><p class="small" style="margin-top:0">Rasmni tanla, rangni bos va rasmning bir joyiga tegin — o‘sha joy bo‘yaladi!</p><div class="pgal" id="pgal"></div></div>
+  <div id="ped" hidden>
+    <div class="pwrap"><canvas id="pc"></canvas></div>
+    <div class="pal" id="pal"></div>
+    <div class="ptools">
+      <button id="pt-fill" class="on">🪣 To‘ldir</button><button id="pt-brush">🖌 Chiz</button><button id="pt-undo">↩️ Orqaga</button><button id="pt-clear">🧽 Tozala</button>
+    </div>
+    <button class="btn gold" id="p-done">✅ Tayyor! Saqlash</button>
+    <button class="btn" id="p-send">📤 Oilamga yuborish</button>
+  </div>
+</section>
+
 </div>
 <canvas class="confetti" id="cf"></canvas>
 
 <script>
 /* yangi versiya chiqsa, eski keshni chetlab o'tish */
-(function(){ var V=9; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
+(function(){ var V=10; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
   if(j&&j.v>V){ var k="odv"+j.v; if(!sessionStorage.getItem(k)){ sessionStorage.setItem(k,1); location.replace(location.pathname+"?v="+j.v+"&t="+Date.now()+location.hash); } } }).catch(function(){}); }catch(e){} })();
 
 (function(){
@@ -378,6 +414,7 @@ function go(v){
   if (v==="quiz") qStart();
   if (v==="diary") dRender();
   if (v==="watch") wRender();
+  if (v==="boyash") pGal();
   if (v==="home") homeRender();
   hap();
 }
@@ -392,6 +429,7 @@ function homeRender(){
   $("#hello").textContent = "Assalomu alaykum" + (u && u.first_name ? ", "+u.first_name : "") + "!";
   var t=(DB.data.total||0), td=((DB.data.days||{})[dk()]||[]).length;
   $("#dtag").textContent = td+"/8 ⭐"; $("#hstars").textContent = t;
+  $("#ptag").textContent = Object.keys(DB.data.paint||{}).length+"/6 🎨";
   $("#htoday").textContent = td+"/"+DEEDS.length; $("#htbar").style.width = (td/DEEDS.length*100)+"%";
 }
 
@@ -569,6 +607,106 @@ $("#o-send").onclick=function(){
      if(!r.ok) throw 0;
      hap("ok"); confetti(); $("#ofrm").hidden=true; payShow(r.id);
    }).catch(function(){ btn.disabled=false; btn.textContent="🎬 Buyurtma berish"; try{ tg.showAlert("Xatolik bo‘ldi, qayta urinib ko‘ring."); }catch(e){} });
+};
+
+/* ---------- BO'YASH ---------- */
+var PIMG=["9677b3c3-0da3-4e9d-af52-06fb7c2e4b44","01afea2e-bed0-46b3-92e5-a4b94fd4fdca","f2fed831-2504-4407-96c0-3c6ea5cbd7f3","84a20fa5-13d9-45e2-8001-b2ca97ec06b6","6c185951-e85a-4118-aebc-f721becde747","a7da98cd-72b0-4b5b-a403-a94467653b5e"].map(function(id){return "https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/"+id+".png";});
+var PNAME=["Halili tish yuvyapti","Oisha yordam beryapti","Bog‘da o‘yin","O‘yinchoqlarni yig‘ish","Maryam gul o‘stiryapti","Bo‘lishish — yaxshi!"];
+var PCOL=["#ff4d4d","#ff9f1c","#ffd23f","#7bd13f","#2fbf5f","#3ec7e0","#2f6bff","#7d5cff","#ff5fa2","#a0522d","#f4c7a1","#ffe0bd","#8d5524","#9aa3b5","#1b2559","#ffffff"];
+var pI=0,pCol=PCOL[0],pTool="fill",pW=660,pH=876,pLine=null,pWall=null,pPaint=null,pUndo=[],pCtx=null,pDirty=false;
+function pKey(i){return "odobim_paint_"+i;}
+function pGal(){
+  $("#pgalw").hidden=false; $("#ped").hidden=true; $("#ptitle").textContent="Rasm bo‘yash";
+  var done=DB.data.paint||{};
+  $("#pgal").innerHTML=PIMG.map(function(u,i){ var sv=null; try{ sv=localStorage.getItem(pKey(i)+"_t"); }catch(e){}
+    return '<button data-p="'+i+'"><img src="'+(sv||u)+'" alt="">'+(done[i]?'<i>⭐</i>':'')+'<span>'+PNAME[i]+'</span></button>'; }).join("");
+  $$("#pgal button").forEach(function(b){ b.onclick=function(){ pOpen(+b.dataset.p); }; });
+}
+function pOpen(i){
+  pI=i; $("#pgalw").hidden=true; $("#ped").hidden=false; $("#ptitle").textContent=PNAME[i]; window.scrollTo(0,0);
+  var c=$("#pc"); c.width=pW; c.height=pH; pCtx=c.getContext("2d"); pCtx.fillStyle="#fff"; pCtx.fillRect(0,0,pW,pH);
+  pCtx.fillStyle="#9aa3b5"; pCtx.font="bold 34px Fredoka,sans-serif"; pCtx.textAlign="center"; pCtx.fillText("Yuklanmoqda…",pW/2,pH/2);
+  var im=new Image(); im.crossOrigin="anonymous";
+  im.onload=function(){
+    var t=document.createElement("canvas"); t.width=pW; t.height=pH; var tx=t.getContext("2d"); tx.fillStyle="#fff"; tx.fillRect(0,0,pW,pH); tx.drawImage(im,0,0,pW,pH);
+    var d=tx.getImageData(0,0,pW,pH).data, n=pW*pH; pLine=new Uint8Array(n); pWall=new Uint8Array(n);
+    for(var k=0;k<n;k++) pLine[k]=(d[k*4]+d[k*4+1]+d[k*4+2])<390?1:0;
+    for(var y=0;y<pH;y++) for(var x=0;x<pW;x++){ var q=y*pW+x; if(pLine[q]||(x>0&&pLine[q-1])||(x<pW-1&&pLine[q+1])||(y>0&&pLine[q-pW])||(y<pH-1&&pLine[q+pW])) pWall[q]=1; }
+    pPaint=pCtx.createImageData(pW,pH); var p=pPaint.data; for(k=0;k<n*4;k++) p[k]=255;
+    pUndo=[]; pDirty=false;
+    var sv=null; try{ sv=localStorage.getItem(pKey(i)); }catch(e){}
+    if(sv){ var si=new Image(); si.onload=function(){ var t2=document.createElement("canvas"); t2.width=pW; t2.height=pH; var x2=t2.getContext("2d"); x2.drawImage(si,0,0); pPaint=x2.getImageData(0,0,pW,pH); pDraw(); }; si.src=sv; }
+    pDraw();
+  };
+  im.onerror=function(){ pCtx.fillStyle="#fff"; pCtx.fillRect(0,0,pW,pH); pCtx.fillStyle="#c2306f"; pCtx.fillText("Rasm yuklanmadi",pW/2,pH/2); };
+  im.src=PIMG[i];
+}
+function pDraw(){
+  var o=pCtx.createImageData(pW,pH), a=o.data, p=pPaint.data;
+  for(var k=0,n=pW*pH;k<n;k++){ var j=k*4; if(pLine[k]){ a[j]=27;a[j+1]=27;a[j+2]=40; } else { a[j]=p[j];a[j+1]=p[j+1];a[j+2]=p[j+2]; } a[j+3]=255; }
+  pCtx.putImageData(o,0,0);
+}
+function hex(c){ return [parseInt(c.substr(1,2),16),parseInt(c.substr(3,2),16),parseInt(c.substr(5,2),16)]; }
+function pSnap(){ pUndo.push(new Uint8ClampedArray(pPaint.data)); if(pUndo.length>15) pUndo.shift(); }
+function pFill(x,y){
+  var s=y*pW+x; if(pWall[s]) { // chiziq ustiga bosilsa — yaqin bo'sh joyni qidir
+    var f=-1; for(var r=1;r<8&&f<0;r++) for(var dy=-r;dy<=r&&f<0;dy++) for(var dx=-r;dx<=r;dx++){ var xx=x+dx,yy=y+dy; if(xx>=0&&yy>=0&&xx<pW&&yy<pH&&!pWall[yy*pW+xx]){ f=yy*pW+xx; break; } }
+    if(f<0) return; s=f; }
+  var p=pPaint.data, c=hex(pCol), j=s*4, r0=p[j],g0=p[j+1],b0=p[j+2];
+  if(r0===c[0]&&g0===c[1]&&b0===c[2]) return;
+  pSnap();
+  var seen=new Uint8Array(pW*pH), st=[s], filled=[];
+  while(st.length){ var q=st.pop(); if(seen[q]) continue; seen[q]=1; if(pWall[q]) continue; var jj=q*4;
+    if(p[jj]!==r0||p[jj+1]!==g0||p[jj+2]!==b0) continue;
+    p[jj]=c[0];p[jj+1]=c[1];p[jj+2]=c[2]; filled.push(q);
+    var qx=q%pW; if(qx>0) st.push(q-1); if(qx<pW-1) st.push(q+1); if(q>=pW) st.push(q-pW); if(q<pW*(pH-1)) st.push(q+pW); }
+  // chiziq yonidagi 1px bo'shliqni ham bo'ya
+  for(var m=0;m<filled.length;m++){ var q2=filled[m], nb=[q2-1,q2+1,q2-pW,q2+pW];
+    for(var z=0;z<4;z++){ var w=nb[z]; if(w>=0&&w<pW*pH&&pWall[w]&&!pLine[w]){ var wj=w*4; p[wj]=c[0];p[wj+1]=c[1];p[wj+2]=c[2]; } } }
+  pDirty=true; pDraw(); hap();
+}
+function pBrush(x,y){
+  var p=pPaint.data,c=hex(pCol),R=11;
+  for(var dy=-R;dy<=R;dy++) for(var dx=-R;dx<=R;dx++){ if(dx*dx+dy*dy>R*R) continue; var xx=x+dx,yy=y+dy; if(xx<0||yy<0||xx>=pW||yy>=pH) continue; var q=yy*pW+xx; if(pLine[q]) continue; var j=q*4; p[j]=c[0];p[j+1]=c[1];p[j+2]=c[2]; }
+  pDirty=true;
+}
+function pPos(e){ var r=$("#pc").getBoundingClientRect(), t=e.touches?e.touches[0]:e; return [Math.floor((t.clientX-r.left)/r.width*pW),Math.floor((t.clientY-r.top)/r.height*pH)]; }
+(function(){
+  var c=$("#pc"), down=false, last=null, raf=0;
+  function line(a,b){ var dx=b[0]-a[0],dy=b[1]-a[1],n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/4)); for(var k=0;k<=n;k++) pBrush(Math.round(a[0]+dx*k/n),Math.round(a[1]+dy*k/n)); }
+  function start(e){ if(!pPaint) return; e.preventDefault(); var pt=pPos(e);
+    if(pTool==="fill"){ pFill(pt[0],pt[1]); return; } pSnap(); down=true; last=pt; pBrush(pt[0],pt[1]); pDraw(); }
+  function move(e){ if(!down) return; e.preventDefault(); var pt=pPos(e); line(last,pt); last=pt; if(!raf) raf=requestAnimationFrame(function(){ raf=0; pDraw(); }); }
+  function end(){ if(down){ down=false; pDraw(); } }
+  c.addEventListener("touchstart",start,{passive:false}); c.addEventListener("touchmove",move,{passive:false}); c.addEventListener("touchend",end);
+  c.addEventListener("mousedown",start); window.addEventListener("mousemove",move); window.addEventListener("mouseup",end);
+  $("#pal").innerHTML=PCOL.map(function(k,i){ return '<button style="background:'+k+'" data-c="'+k+'"'+(i===0?' class="on"':'')+'></button>'; }).join("");
+  $$("#pal button").forEach(function(b){ b.onclick=function(){ $$("#pal button").forEach(function(x){x.classList.remove("on");}); b.classList.add("on"); pCol=b.dataset.c; hap(); }; });
+  function tool(t){ pTool=t; $("#pt-fill").classList.toggle("on",t==="fill"); $("#pt-brush").classList.toggle("on",t==="brush"); hap(); }
+  $("#pt-fill").onclick=function(){ tool("fill"); }; $("#pt-brush").onclick=function(){ tool("brush"); };
+  $("#pt-undo").onclick=function(){ if(!pUndo.length) return; pPaint.data.set(pUndo.pop()); pDraw(); hap(); };
+  $("#pt-clear").onclick=function(){ if(!pPaint) return; pSnap(); pPaint.data.fill(255); pDraw(); hap(); };
+})();
+function pSave(){
+  if(!pPaint) return null;
+  var t=document.createElement("canvas"); t.width=pW; t.height=pH; t.getContext("2d").putImageData(pPaint,0,0);
+  try{ localStorage.setItem(pKey(pI),t.toDataURL("image/png")); }catch(e){}
+  var full=$("#pc").toDataURL("image/jpeg",.9);
+  try{ var s=document.createElement("canvas"); s.width=220; s.height=292; s.getContext("2d").drawImage($("#pc"),0,0,220,292); localStorage.setItem(pKey(pI)+"_t",s.toDataURL("image/jpeg",.8)); }catch(e){}
+  DB.data.paint=DB.data.paint||{};
+  if(!DB.data.paint[pI]){ DB.data.paint[pI]=1; DB.data.total=(DB.data.total||0)+1; DB.save(); confetti(); hap("ok"); try{ tg&&tg.showAlert("Barakalla! 🎉 +1 ⭐"); }catch(e){} }
+  else { DB.save(); hap("ok"); try{ tg&&tg.showAlert("Saqlandi ✅"); }catch(e){} }
+  return full;
+}
+$("#p-done").onclick=function(){ pSave(); };
+$("#p-send").onclick=function(){
+  var img=pSave(); if(!img) return;
+  if(!tg||!tg.initData){ alert("Telegram’da @odobimbot orqali oching."); return; }
+  var b=this; b.disabled=true; b.textContent="Yuborilmoqda…";
+  fetch(API+"/api/paint",{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify({photo:img,name:PNAME[pI]})})
+   .then(function(r){return r.json();}).then(function(r){ if(!r.ok) throw 0; b.textContent="✅ Botga yuborildi"; try{ tg.showAlert("Rasm botga yuborildi! Uni oilangizga “Ulashish” orqali yuboring 💛"); }catch(e){} })
+   .catch(function(){ b.textContent="📤 Oilamga yuborish"; try{ tg.showAlert("Yuborilmadi, qayta urinib ko‘ring."); }catch(e){} })
+   .then(function(){ setTimeout(function(){ b.disabled=false; b.textContent="📤 Oilamga yuborish"; },3000); });
 };
 
 DB.load(function(){ homeRender(); if (location.hash && $("#v-"+location.hash.slice(1))) go(location.hash.slice(1)); });
