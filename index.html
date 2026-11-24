@@ -254,9 +254,9 @@ img{display:block;max-width:100%}
     <div class="gl"><div><b>Odob yo‘li</b><small>Yugur, tanga yig‘, savolga javob ber</small></div><span class="gbtn">▶</span></div>
   </button>
   <button class="g red" id="g-new">
-    <img id="g-new-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/e24d2d04-e138-4d17-8eb8-4efdcae5b5f8.jpg" alt="" style="object-position:50% 48%">
-    <span class="tag">🆕 Yangi multfilm</span>
-    <div class="gl"><div><b id="g-new-t">Multfilmlar</b><small>Halili va opalari bilan tomosha qil</small></div><span class="gbtn">▶</span></div>
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/725ae9e4-b83f-4993-b35b-696c089ee550.jpg" alt="" style="object-position:50% 30%">
+    <span class="tag">🆕 Yangi qism</span>
+    <div class="gl"><div><b>Multfilmlar</b><small id="g-new-t">Halili va opalari bilan tomosha qil</small></div><span class="gbtn">▶</span></div>
   </button>
   <button class="allw" data-go="watch">📺 Barcha multfilmlar <span>›</span></button>
   <button class="g pink gpaint" data-go="boyash">
@@ -476,7 +476,7 @@ function homeRender(){
   $("#hello").textContent = "Assalomu alaykum" + (u && u.first_name ? ", "+u.first_name : "") + "!";
   var t=(DB.data.total||0), td=((DB.data.days||{})[dk()]||[]).length;
   $("#dtag").textContent = td+"/8 ⭐";
-  var le=EPS.filter(released).slice(-1)[0]; if(le){ $("#g-new-img").src=le.img; $("#g-new-t").textContent=le.t; $("#g-new").dataset.y=le.y||""; } $("#hstars").textContent = t;
+  var le=EPS.filter(released).slice(-1)[0]; if(le){ $("#g-new-t").textContent="Yangi: "+le.t; $("#g-new").dataset.y=le.y||""; } $("#hstars").textContent = t;
   $("#ptag").textContent = Object.keys(DB.data.paint||{}).length+"/6 🎨";
   $("#htoday").textContent = td+"/"+DEEDS.length; $("#htbar").style.width = (td/DEEDS.length*100)+"%";
 }
