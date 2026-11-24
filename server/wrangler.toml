@@ -1,0 +1,11 @@
+name = "odobim-bot"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "DB"
+id = "__KV_ID__"
+
+[triggers]
+crons = ["* * * * *", "0 14 * * *", "10 13 * * *"]

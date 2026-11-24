@@ -1,0 +1,56 @@
+name: Botni yangilash
+
+on:
+  push:
+    branches: [main]
+    paths: ["server/**", ".github/workflows/deploy-bot.yml"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Kalitlar borligini tekshirish
+        run: |
+          for v in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID BOT_TOKEN; do
+            if [ -z "${!v}" ]; then echo "::error::$v kaliti GitHub Secrets'ga qo'yilmagan"; exit 1; fi
+          done
+
+      - name: Ma'lumotlar bazasini (KV) tayyorlash
+        run: |
+          npm i -g wrangler@3.114.0 >/dev/null
+          find_id() { wrangler kv namespace list | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=JSON.parse(s.slice(s.indexOf("[")));const n=a.find(x=>/odobim-db$/.test(x.title));console.log(n?n.id:"")})'; }
+          ID=$(find_id)
+          if [ -z "$ID" ]; then wrangler kv namespace create odobim-db; ID=$(find_id); fi
+          echo "KV: $ID"
+          sed -i "s/__KV_ID__/$ID/" wrangler.toml
+
+      - name: Serverga yuklash
+        run: |
+          wrangler deploy 2>&1 | tee ../deploy.log
+          URL=$(grep -o 'https://[a-zA-Z0-9.-]*workers\.dev' ../deploy.log | head -1)
+          if [ -z "$URL" ]; then echo "::error::Worker manzili topilmadi"; exit 1; fi
+          echo "URL=$URL" >> $GITHUB_ENV
+          printf '%s' "$BOT_TOKEN" | wrangler secret put BOT_TOKEN
+
+      - name: Telegram'ni ulash
+        run: |
+          SECRET=$(printf '%s' "$BOT_TOKEN" | sha256sum | cut -c1-32)
+          api() { curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/$1" -H 'Content-Type: application/json' -d "$2" | head -c 300; echo; }
+          api setWebhook "{\"url\":\"$URL/webhook\",\"secret_token\":\"$SECRET\",\"allowed_updates\":[\"message\"],\"drop_pending_updates\":false}"
+          api setMyCommands '{"commands":[{"command":"start","description":"O‘yinlarni ochish"},{"command":"eslatma","description":"Kunlik eslatmani yoqish/o‘chirish"},{"command":"yangiliklar","description":"Yangi multfilm xabarlari"}]}'
+          api setChatMenuButton '{"menu_button":{"type":"web_app","text":"🎮 O‘yinlar","web_app":{"url":"https://mukhibullokh.github.io/odobim-bot/"}}}'
+          echo "### ✅ Bot ulandi" >> $GITHUB_STEP_SUMMARY
+          echo "Server manzili: $URL" >> $GITHUB_STEP_SUMMARY
