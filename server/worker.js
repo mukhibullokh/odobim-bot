@@ -4,17 +4,17 @@
 
 const APP_URL = "https://mukhibullokh.github.io/odobim-bot/";
 const EPISODES_URL = APP_URL + "episodes.json";
-const APP_VER = "?v=7";
+const APP_VER = "?v=8";
 const BANNER = "https://d8j0ntlcm91z4.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/hf_20261124_105810_103267b5-c68a-4097-b182-6e4db592fc25.png";
 const BATCH = 40;
 const ADMIN_ID = 5991137115;            // buyurtmalar va cheklar shu Telegram akkauntga keladi
 const PHOTO_CONSENT = "Men ushbu bolaning ota-onasi (vasiysi)man. Rasmini Odobimga faqat multfilm qahramonini yasash uchun berishga roziman. Rasm boshqa joyda ishlatilmaydi, hech kimga berilmaydi va ish tugagach o‘chiriladi.";
-const YT_CONSENT = "Roziman: multfilm Odobim YouTube kanalida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.";
+const YT_CONSENT = "Roziman: multfilm Odobim YouTube va Instagram sahifalarida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.";
 const CARD = "8600 1404 0140 4463";      // Sisters Cooking'dagi to'lov kartasi
 const CARD_OWNER = "Farhodov Muhibulloh";
 const TARIFFS = {
   oila: { name: "🎁 Oilaviy", price: 149000, desc: "Multfilm faqat sizning oilangizga beriladi" },
-  dost: { name: "⭐ Odobim do‘sti", price: 299000, desc: "Multfilm sizga beriladi va Odobim YouTube kanalida chiqadi" }
+  dost: { name: "⭐ Odobim do‘sti", price: 299000, desc: "Multfilm sizga beriladi va Odobim YouTube hamda Instagram sahifalariga qo‘yiladi" }
 };
 const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); // bir daqiqada yuboriladigan xabarlar soni (bepul tarif cheklovi ichida)
@@ -278,7 +278,7 @@ ${o.photos ? "🧒 Farzandingiz rasmi qabul qilindi — qahramon unga o‘xshab 
 ⏳ To‘lov tasdiqlangach, multfilm 1–2 kun ichida tayyor bo‘ladi.` });
     await tg(env, "sendMessage", { chat_id: ADMIN_ID, parse_mode: "HTML", text:
 `🆕 <b>Yangi buyurtma #${seq}</b>
-${TARIFFS[t].name} — ${fmt(o.price)} so‘m${o.consent ? "\n✅ YouTube’ga qo‘yishga rozi" : ""}
+${TARIFFS[t].name} — ${fmt(o.price)} so‘m${o.consent ? "\n✅ YouTube va Instagram’ga qo‘yishga rozi" : ""}
 
 👶 Bola: <b>${esc(o.child)}</b>, ${esc(o.age)} yosh, ${o.gender}
 👕 Ko‘rinishi: ${esc(o.look) || "—"}
@@ -294,7 +294,7 @@ Chek kelsa, shu yerga yuboraman. Tayyor multfilmni yuborish: videoni <code>#${se
       const doc = (title, c) => `📄 <b>${title}</b>\nBuyurtma #${seq} · Bola: ${esc(o.child)}\nKim: ${who}\nVaqt: ${c.at}\n\n«${c.text}»\n\n✅ Ota-ona ilovada belgini bosib tasdiqladi.`;
       const parts = [];
       if (o.photoConsent) parts.push(doc("Rasmdan foydalanishga rozilik", o.photoConsent));
-      if (o.ytConsent) parts.push(doc("YouTube’ga qo‘yishga rozilik", o.ytConsent));
+      if (o.ytConsent) parts.push(doc("YouTube va Instagram’ga qo‘yishga rozilik", o.ytConsent));
       const r = await tg(env, "sendMessage", { chat_id: ADMIN_ID, parse_mode: "HTML", text: parts.join("\n\n———\n\n") });
       if (r && r.result) await tg(env, "pinChatMessage", { chat_id: ADMIN_ID, message_id: r.result.message_id, disable_notification: true });
       await tg(env, "sendMessage", { chat_id: id, parse_mode: "HTML", text: "📄 <b>Roziligingiz qayd etildi</b> — " + (o.photoConsent || o.ytConsent).at + ".\nIstalgan payt rasmni yoki videoni o‘chirishni so‘rashingiz mumkin — shu chatga yozing." });

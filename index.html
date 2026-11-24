@@ -272,7 +272,7 @@ img{display:block;max-width:100%}
   <div class="sect">1. Tarifni tanlang</div>
   <div class="tars" id="otars">
     <button class="tar on" data-t="oila"><span class="em">🎁</span><div><b>Oilaviy</b><small>Multfilm faqat sizga beriladi, hech qayerga qo‘yilmaydi</small></div><i>149 000</i></button>
-    <button class="tar" data-t="dost"><span class="em">⭐</span><div><b>Odobim do‘sti</b><small>Sizga beriladi va Odobim YouTube kanalida chiqadi</small></div><i>299 000</i></button>
+    <button class="tar" data-t="dost"><span class="em">⭐</span><div><b>Odobim do‘sti</b><small>Multfilm sizga beriladi va Odobim YouTube hamda Instagram sahifalariga qo‘yiladi</small></div><i>299 000</i></button>
   </div>
   <div class="sect">2. Farzandingiz haqida</div>
   <div class="row2">
@@ -289,7 +289,7 @@ img{display:block;max-width:100%}
     <option>Salom berish</option><option>Tish yuvish</option><option>O‘yinchoqlarni yig‘ishtirish</option><option>Ota-onaga yordam berish</option>
     <option>Ovqatdan oldin qo‘l yuvish</option><option>O‘z vaqtida uxlash</option><option>Ukaga, opaga mehribonlik</option><option>Boshqa (izohda yozing)</option></select></label>
   <label class="fld"><span>Izoh (ixtiyoriy)</span><textarea id="o-note" rows="2" maxlength="300" placeholder="Masalan: tish yuvishni yoqtirmaydi, mashinani yaxshi ko‘radi"></textarea></label>
-  <label class="chk" id="o-cwrap" hidden><input type="checkbox" id="o-consent"><span>Roziman: multfilm Odobim YouTube kanalida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.</span></label>
+  <label class="chk" id="o-cwrap" hidden><input type="checkbox" id="o-consent"><span>Roziman: multfilm Odobim YouTube va Instagram sahifalarida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.</span></label>
   <button class="btn pink" id="o-send">🎬 Buyurtma berish</button>
   <p class="small">Buyurtmadan keyin bot to‘lov ma’lumotini yuboradi. Multfilmda faqat Halili, Oisha, Maryam, Rayyona va sizning farzandingiz bo‘ladi.</p>
   </div>
@@ -556,7 +556,7 @@ function payWait(){
 $("#o-send").onclick=function(){
   var child=$("#o-child").value.trim(), btn=$("#o-send");
   if(!child){ $("#o-child").focus(); try{ tg&&tg.showAlert("Farzandingiz ismini yozing 🙂"); }catch(e){} return; }
-  if(oT==="dost" && !$("#o-consent").checked){ try{ tg ? tg.showAlert("YouTube tarifi uchun rozilik belgisini qo‘ying.") : alert("Rozilik belgisini qo‘ying"); }catch(e){} return; }
+  if(oT==="dost" && !$("#o-consent").checked){ try{ tg ? tg.showAlert("YouTube va Instagram’ga qo‘yish uchun rozilik belgisini qo‘ying.") : alert("Rozilik belgisini qo‘ying"); }catch(e){} return; }
   if(oPh.length && !$("#o-pconsent").checked){ $("#o-pwrap").scrollIntoView({block:"center"}); try{ tg ? tg.showAlert("Rasm yuborish uchun rozilik belgisini qo‘ying.") : alert("Rasm uchun rozilik belgisini qo‘ying"); }catch(e){} return; }
   if(!tg || !tg.initData){ alert("Buyurtma berish uchun ilovani Telegram’da @odobimbot orqali oching."); return; }
   btn.disabled=true; btn.textContent="Yuborilmoqda…";
