@@ -4,7 +4,7 @@
 
 const APP_URL = "https://mukhibullokh.github.io/odobim-bot/";
 const EPISODES_URL = APP_URL + "episodes.json";
-const APP_VER = "?v=12";
+const APP_VER = "?v=13";
 const BANNER = "https://d8j0ntlcm91z4.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/hf_20261124_105810_103267b5-c68a-4097-b182-6e4db592fc25.png";
 const BATCH = 40;
 const ADMIN_ID = 5991137115;            // buyurtmalar va cheklar shu Telegram akkauntga keladi
@@ -224,24 +224,30 @@ ${Object.keys(TARIFFS).map(k => `   ${TARIFFS[k].name}: ${by[k].paid} / ${by[k].
 ${last}`;
 }
 async function sendStat(env, edit) {
-  const text = await statText(env), reply_markup = { inline_keyboard: [[{ text: "🔄 Yangilash", callback_data: "stat:0" }]] };
+  const text = await statText(env), reply_markup = { inline_keyboard: [[{ text: "📊 Panelni ochish", web_app: { url: APP_URL + "admin.html" + APP_VER } }], [{ text: "🔄 Yangilash", callback_data: "stat:0" }]] };
   if (edit) return tg(env, "editMessageText", { chat_id: ADMIN_ID, message_id: edit, parse_mode: "HTML", text, reply_markup });
   return tg(env, "sendMessage", { chat_id: ADMIN_ID, parse_mode: "HTML", text, reply_markup });
 }
 
-async function onCallback(env, q) {
-  const [act, oid] = String(q.data || "").split(":");
-  if (q.from.id !== ADMIN_ID) return tg(env, "answerCallbackQuery", { callback_query_id: q.id });
-  if (act === "stat") { await sendStat(env, q.message && q.message.message_id); return tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Yangilandi ✅" }); }
-  const o = await getJ(env, "o:" + oid, null);
-  if (!o) return tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Buyurtma topilmadi" });
+async function setOrderStatus(env, o, act) {
   if (act === "pay") {
     o.status = "paid"; o.paidAt = Date.now(); await putJ(env, "o:" + o.id, o);
     await tg(env, "sendMessage", { chat_id: o.uid, text: `🎉 To‘lov tasdiqlandi! ${o.child} uchun ${WHAT(o)} tayyorlanmoqda. ${ETA(o)} ichida shu chatga yuboramiz 💛\n\nFarzandingizning rasmini hali yubormagan bo‘lsangiz, hozir yuborishingiz mumkin.` });
   } else if (act === "rej") {
     o.status = "rejected"; await putJ(env, "o:" + o.id, o);
     await tg(env, "sendMessage", { chat_id: o.uid, text: `❌ Chek tasdiqlanmadi. Iltimos, to‘lovni tekshirib, chekni qayta yuboring yoki savolingizni shu yerga yozing.` });
+  } else if (act === "done") {
+    o.status = "delivered"; await putJ(env, "o:" + o.id, o);
   }
+  return o;
+}
+async function onCallback(env, q) {
+  const [act, oid] = String(q.data || "").split(":");
+  if (q.from.id !== ADMIN_ID) return tg(env, "answerCallbackQuery", { callback_query_id: q.id });
+  if (act === "stat") { await sendStat(env, q.message && q.message.message_id); return tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Yangilandi ✅" }); }
+  const o = await getJ(env, "o:" + oid, null);
+  if (!o) return tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Buyurtma topilmadi" });
+  await setOrderStatus(env, o, act);
   await tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: act === "pay" ? "Tasdiqlandi ✅" : "Rad etildi" });
   if (q.message) await tg(env, "editMessageReplyMarkup", { chat_id: q.message.chat.id, message_id: q.message.message_id, reply_markup: { inline_keyboard: [[{ text: act === "pay" ? "✅ #" + o.id + " to‘langan" : "❌ #" + o.id + " rad etilgan", callback_data: "x" }]] } });
 }
@@ -280,6 +286,28 @@ async function api(req, env, path) {
     }
     rows.sort((a, b) => b.tr - a.tr);
     return json({ ok: true, rows: rows.slice(0, 50), friends: friends.length });
+  }
+  if (path.startsWith("/api/admin/")) {
+    if (id !== ADMIN_ID) return json({ ok: false, error: "admin" }, 403);
+    if (path === "/api/admin/stats") {
+      const users = await getJ(env, "users", []);
+      const joins = await Promise.all(Array.from({ length: 30 }, async (_, i) => ({ d: tday(i), n: Number(await env.DB.get("st:j:" + tday(i)) || 0) })));
+      const seq = Number(await env.DB.get("orderSeq") || 100);
+      const ids = []; for (let i = Math.max(101, seq - 299); i <= seq; i++) ids.push(i);
+      const orders = (await Promise.all(ids.map(i => getJ(env, "o:" + i, null)))).filter(Boolean).map(o => ({
+        id: o.id, uid: o.uid, at: o.at, paidAt: o.paidAt, status: o.status, tariff: o.tariff, price: o.price, child: o.child, age: o.age,
+        gender: o.gender, topic: o.topic, look: o.look, note: o.note, parent: o.parent, username: o.username, photos: o.photos || 0, consent: !!o.consent
+      }));
+      const tariffs = {}; for (const k in TARIFFS) tariffs[k] = { name: TARIFFS[k].name, price: TARIFFS[k].price };
+      return json({ ok: true, users: users.length, joins: joins.reverse(), orders, tariffs, today: tday(0) });
+    }
+    if (path === "/api/admin/order" && req.method === "POST") {
+      const o = await getJ(env, "o:" + Number(body.id), null);
+      if (!o || !["pay", "rej", "done"].includes(body.act)) return json({ ok: false }, 400);
+      await setOrderStatus(env, o, body.act);
+      return json({ ok: true, status: o.status });
+    }
+    return json({ ok: false }, 404);
   }
   if (path === "/api/paint" && req.method === "POST") {
     const name = String(body.name || "").replace(/[<>]/g, "").slice(0, 60);

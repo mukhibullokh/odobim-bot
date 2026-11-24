@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="uz"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Odobim — Panel</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1b2559;--muted:#6b7499;--bg:#f3f5fb;--card:#fff;--line:#e8ebf5;--blue:#2f6bff;--green:#22b35e;--red:#ef4b4b;--gold:#ffb020;--pink:#ff5fa2;--purple:#7d4cf0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;font-weight:700}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.wrap{max-width:560px;margin:0 auto;padding:14px 14px 40px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.top h1{margin:0;font:700 24px Fredoka;display:flex;align-items:center;gap:8px}
+.top h1 img{width:36px;height:36px;border-radius:50%}
+.top small{display:block;font-size:12px;color:var(--muted);font-family:Nunito}
+.ref{width:42px;height:42px;border-radius:14px;background:#fff;box-shadow:0 2px 8px rgba(27,37,89,.08);font-size:20px}
+.ref.spin{animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#e4e8f4;border-radius:14px;padding:4px;margin-bottom:14px}
+.tabs button{padding:10px;border-radius:11px;font:600 15px Fredoka;color:var(--muted)}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px rgba(27,37,89,.1)}
+.tabs i{font-style:normal;background:var(--red);color:#fff;border-radius:99px;padding:0 7px;font-size:12px;margin-left:4px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border-radius:18px;padding:14px;box-shadow:0 2px 10px rgba(27,37,89,.06);position:relative;overflow:hidden}
+.kpi .l{font-size:12.5px;color:var(--muted)}
+.kpi .v{font:700 26px Fredoka;margin-top:2px;white-space:nowrap}
+.kpi .s{font-size:12px;color:var(--muted);margin-top:2px}
+.kpi .ic{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:18px}
+.card{background:var(--card);border-radius:18px;padding:14px;box-shadow:0 2px 10px rgba(27,37,89,.06);margin-bottom:12px}
+.card h3{margin:0 0 10px;font:600 17px Fredoka;display:flex;justify-content:space-between;align-items:baseline}
+.card h3 small{font:700 12px Nunito;color:var(--muted)}
+.chart{display:flex;align-items:flex-end;gap:3px;height:120px;padding-top:16px}
+.chart div{flex:1;background:linear-gradient(#6f96ff,var(--blue));border-radius:5px 5px 2px 2px;min-height:3px;position:relative}
+.chart div.t{background:linear-gradient(#ffd36b,var(--gold))}
+.chart div span{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted)}
+.axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
+.prod{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.prod:first-of-type{border-top:0}
+.prod .em{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:none}
+.prod .b{flex:1;min-width:0}
+.prod b{display:block;font:600 15px Fredoka}
+.prod small{font-size:12px;color:var(--muted)}
+.bar{height:7px;background:var(--line);border-radius:9px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;border-radius:9px}
+.prod .r{text-align:right;font:700 15px Fredoka;white-space:nowrap}
+.prod .r small{display:block;font:700 11px Nunito}
+.sts{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.sts div{background:var(--bg);border-radius:12px;padding:8px 4px;text-align:center;font-size:11px;color:var(--muted)}
+.sts b{display:block;font:700 19px Fredoka;color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{white-space:nowrap;background:#fff;border-radius:99px;padding:7px 12px;font-size:13px;box-shadow:0 1px 4px rgba(27,37,89,.08)}
+.chips button.on{background:var(--ink);color:#fff}
+.ord{background:var(--card);border-radius:18px;padding:13px 14px;box-shadow:0 2px 10px rgba(27,37,89,.06);margin-bottom:10px}
+.ord .h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ord .h b{font:600 17px Fredoka}
+.ord .h b small{font:700 12px Nunito;color:var(--muted);margin-left:4px}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.p-new{background:#eef1fb;color:#5b6690}.p-check{background:#fff4d9;color:#a86a00}.p-paid{background:#e2f7ea;color:#16834a}.p-delivered{background:#e6eeff;color:#2450c9}.p-rejected{background:#ffe5e5;color:#c22}
+.ord .meta{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.45}
+.ord .meta b{color:var(--ink)}
+.acts{display:flex;gap:8px;margin-top:10px}
+.acts button,.acts a{flex:1;text-align:center;padding:9px 6px;border-radius:12px;font:600 14px Fredoka;text-decoration:none}
+.a-pay{background:var(--green);color:#fff}.a-rej{background:#ffe5e5;color:#c22}.a-done{background:#e6eeff;color:#2450c9}.a-msg{background:var(--bg);color:var(--ink)}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+.deny{text-align:center;padding:80px 20px}.deny div{font-size:60px}
+.last{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+[hidden]{display:none!important}
+</style></head><body>
+<div class="wrap" id="app">
+  <div class="top">
+    <h1><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/03086372-2389-448a-ba42-7eb886aafb74.png" alt=""><span>Odobim panel<small id="upd">Yuklanmoqda…</small></span></h1>
+    <button class="ref" id="ref">🔄</button>
+  </div>
+  <div class="tabs"><button class="on" data-tab="sum">📊 Umumiy</button><button data-tab="ord">🛒 Buyurtmalar<i id="pend" hidden>0</i></button></div>
+
+  <section id="t-sum">
+    <div class="kpis">
+      <div class="kpi"><div class="ic" style="background:#e6eeff">👥</div><div class="l">Foydalanuvchilar</div><div class="v" id="k-users">—</div><div class="s" id="k-users-s"></div></div>
+      <div class="kpi"><div class="ic" style="background:#fff4d9">➕</div><div class="l">Bugun qo‘shildi</div><div class="v" id="k-new">—</div><div class="s" id="k-new-s"></div></div>
+      <div class="kpi"><div class="ic" style="background:#e2f7ea">💰</div><div class="l">Bugungi tushum</div><div class="v" id="k-revt">—</div><div class="s" id="k-revt-s"></div></div>
+      <div class="kpi"><div class="ic" style="background:#f2e9ff">📅</div><div class="l">Shu oy tushum</div><div class="v" id="k-revm">—</div><div class="s" id="k-revm-s"></div></div>
+    </div>
+    <div class="card"><h3>Yangi foydalanuvchilar <small>oxirgi 30 kun</small></h3><div class="chart" id="chart"></div><div class="axis"><span id="ax0"></span><span>bugun</span></div></div>
+    <div class="card"><h3>Mahsulotlar <small>to‘langan / jami</small></h3><div id="prods"></div></div>
+    <div class="card"><h3>Buyurtma holati</h3><div class="sts" id="sts"></div></div>
+    <div class="card"><h3>Jami tushum <small id="conv"></small></h3><div class="kpi" style="box-shadow:none;padding:0"><div class="v" id="k-rev" style="font-size:32px;color:var(--green)">—</div></div></div>
+  </section>
+
+  <section id="t-ord" hidden>
+    <div class="chips" id="chips"></div>
+    <div id="olist"></div>
+  </section>
+</div>
+<div class="deny" id="deny" hidden><div>🔒</div><h2>Bu sahifa faqat admin uchun</h2></div>
+
+<script>
+var tg=window.Telegram&&Telegram.WebApp; try{tg.ready();tg.expand();tg.setHeaderColor("#f3f5fb");tg.setBackgroundColor("#f3f5fb");}catch(e){}
+var API="https://odobim-bot.muhibulloh2405.workers.dev", D=null, flt="all";
+function $(q){return document.querySelector(q);} function $$(q){return [].slice.call(document.querySelectorAll(q));}
+function fmt(n){return String(Math.round(n||0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");}
+function short(n){ return n>=1e6?(n/1e6).toFixed(n>=1e7?0:1).replace(".0","")+" mln":fmt(n); }
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function hap(t){try{t?tg.HapticFeedback.notificationOccurred(t):tg.HapticFeedback.impactOccurred("light");}catch(e){}}
+function dOf(t){return new Date(t+5*3600e3).toISOString().slice(0,10);}
+function when(t){var d=new Date(t+5*3600e3).toISOString(); return d.slice(8,10)+"."+d.slice(5,7)+" "+d.slice(11,16);}
+var ST={new:["🆕","To‘lanmagan","p-new"],check:["🧾","Chek keldi","p-check"],paid:["✅","To‘langan","p-paid"],delivered:["📦","Topshirildi","p-delivered"],rejected:["❌","Rad etildi","p-rejected"]};
+var PE={ertak:["📖","#f2e9ff","#7d4cf0"],oila:["🎁","#fff4d9","#ffb020"],dost:["⭐","#ffe9f3","#ff5fa2"]};
+function post(u,b){return fetch(API+u,{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":(tg&&tg.initData)||""},body:JSON.stringify(b||{})}).then(function(r){return r.json();});}
+
+function load(){
+  $("#ref").classList.add("spin");
+  post("/api/admin/stats").then(function(r){
+    $("#ref").classList.remove("spin");
+    if(!r.ok){ $("#app").hidden=true; $("#deny").hidden=false; return; }
+    D=r; render(); $("#upd").textContent="Yangilandi: "+when(Date.now()).slice(6);
+  }).catch(function(){ $("#ref").classList.remove("spin"); $("#upd").textContent="Internet xatosi, qayta urining"; });
+}
+function render(){
+  var o=D.orders, today=D.today, month=today.slice(0,7), PAID=function(x){return x.status==="paid"||x.status==="delivered";};
+  var j=D.joins, n7=j.slice(-7).reduce(function(a,b){return a+b.n;},0), n30=j.reduce(function(a,b){return a+b.n;},0);
+  $("#k-users").textContent=fmt(D.users); $("#k-users-s").textContent="30 kunda +"+n30;
+  $("#k-new").textContent="+"+j[j.length-1].n; $("#k-new-s").textContent="kecha +"+j[j.length-2].n+" · 7 kun +"+n7;
+  var rev=0,revM=0,revT=0,paidN=0,ordT=0,ordM=0;
+  o.forEach(function(x){ if(dOf(x.at)===today) ordT++; if(dOf(x.at).slice(0,7)===month) ordM++;
+    if(PAID(x)){ paidN++; rev+=x.price; var pd=dOf(x.paidAt||x.at); if(pd.slice(0,7)===month) revM+=x.price; if(pd===today) revT+=x.price; } });
+  $("#k-revt").textContent=short(revT); $("#k-revt-s").textContent="so‘m · bugun "+ordT+" ta buyurtma";
+  $("#k-revm").textContent=short(revM); $("#k-revm-s").textContent="so‘m · "+ordM+" ta buyurtma";
+  $("#k-rev").textContent=fmt(rev)+" so‘m"; $("#conv").textContent=paidN+" ta xarid · "+(D.users?(paidN/D.users*100).toFixed(1):0)+"% konversiya";
+  var mx=Math.max.apply(null,j.map(function(x){return x.n;}).concat([1]));
+  $("#chart").innerHTML=j.map(function(x,i){ return '<div'+(i===j.length-1?' class="t"':'')+' style="height:'+Math.max(3,x.n/mx*100)+'%">'+(x.n?'<span>'+x.n+'</span>':'')+'</div>'; }).join("");
+  $("#ax0").textContent=j[0].d.slice(8,10)+"."+j[0].d.slice(5,7);
+  $("#prods").innerHTML=Object.keys(D.tariffs).map(function(k){
+    var t=D.tariffs[k], all=o.filter(function(x){return x.tariff===k;}), pd=all.filter(PAID), sum=pd.reduce(function(a,b){return a+b.price;},0), pe=PE[k]||["🛍","#eee","#999"];
+    return '<div class="prod"><div class="em" style="background:'+pe[1]+'">'+pe[0]+'</div><div class="b"><b>'+esc(t.name.replace(/^\S+\s/,""))+'</b><small>'+fmt(t.price)+' so‘m · '+pd.length+' / '+all.length+' ta</small><div class="bar"><i style="width:'+(all.length?pd.length/all.length*100:0)+'%;background:'+pe[2]+'"></i></div></div><div class="r">'+short(sum)+'<small>so‘m</small></div></div>'; }).join("");
+  var c={}; o.forEach(function(x){c[x.status]=(c[x.status]||0)+1;});
+  $("#sts").innerHTML=Object.keys(ST).map(function(k){return '<div><b>'+(c[k]||0)+'</b>'+ST[k][0]+' '+ST[k][1]+'</div>';}).join("");
+  var pend=(c.check||0); $("#pend").hidden=!pend; $("#pend").textContent=pend;
+  orders();
+}
+function orders(){
+  var F=[["all","Hammasi"],["check","🧾 Chek keldi"],["paid","✅ To‘langan"],["new","🆕 To‘lanmagan"],["delivered","📦 Topshirildi"],["rejected","❌ Rad"]];
+  $("#chips").innerHTML=F.map(function(f){ var n=f[0]==="all"?D.orders.length:D.orders.filter(function(x){return x.status===f[0];}).length; return '<button data-f="'+f[0]+'"'+(flt===f[0]?' class="on"':'')+'>'+f[1]+' · '+n+'</button>'; }).join("");
+  $$("#chips button").forEach(function(b){ b.onclick=function(){ flt=b.dataset.f; hap(); orders(); }; });
+  var L=D.orders.slice().reverse().filter(function(x){return flt==="all"||x.status===flt;});
+  if(!L.length){ $("#olist").innerHTML='<div class="empty">Hozircha buyurtma yo‘q 🌱</div>'; return; }
+  $("#olist").innerHTML=L.map(function(x){
+    var s=ST[x.status]||["•",x.status,"p-new"], t=D.tariffs[x.tariff]||{name:x.tariff};
+    var contact=x.username?"https://t.me/"+x.username:"tg://user?id="+x.uid;
+    var acts='';
+    if(x.status==="new"||x.status==="check"||x.status==="rejected") acts+='<button class="a-pay" data-a="pay" data-id="'+x.id+'">✅ To‘landi</button>';
+    if(x.status==="new"||x.status==="check") acts+='<button class="a-rej" data-a="rej" data-id="'+x.id+'">❌ Rad</button>';
+    if(x.status==="paid") acts+='<button class="a-done" data-a="done" data-id="'+x.id+'">📦 Topshirildi</button>';
+    acts+='<a class="a-msg" href="'+contact+'" data-link>💬 Yozish</a>';
+    return '<div class="ord"><div class="h"><b>#'+x.id+' '+esc(x.child)+'<small>'+esc(x.age)+' yosh, '+esc(x.gender)+'</small></b><span class="pill '+s[2]+'">'+s[0]+' '+s[1]+'</span></div>'+
+      '<div class="meta"><b>'+esc(t.name)+'</b> — '+fmt(x.price)+' so‘m<br>📚 '+esc(x.topic)+(x.look?' · 👕 '+esc(x.look):'')+(x.note?'<br>📝 '+esc(x.note):'')+
+      '<br>👤 '+esc(x.parent)+(x.username?' @'+esc(x.username):'')+' · 🖼 '+(x.photos?x.photos+' rasm':'rasm yo‘q')+(x.consent?' · ✅ YouTube roziligi':'')+'<br>🕑 '+when(x.at)+'</div>'+
+      '<div class="acts">'+acts+'</div></div>'; }).join("");
+  $$("#olist [data-a]").forEach(function(b){ b.onclick=function(){
+    var a=b.dataset.a, id=b.dataset.id, q={pay:"#"+id+" to‘lovini tasdiqlaysizmi? Ota-onaga xabar boradi.",rej:"#"+id+" chekini rad etasizmi? Ota-onaga xabar boradi.",done:"#"+id+" topshirildi deb belgilaysizmi?"}[a];
+    var go=function(ok){ if(!ok) return; b.disabled=true; b.textContent="…";
+      post("/api/admin/order",{id:id,act:a}).then(function(r){ if(!r.ok) throw 0; hap("success"); D.orders.forEach(function(x){ if(x.id==id){ x.status=r.status; if(a==="pay") x.paidAt=Date.now(); } }); render(); })
+      .catch(function(){ hap("error"); b.disabled=false; b.textContent="Xato, qayta"; }); };
+    try{ tg.showConfirm(q,go); }catch(e){ go(confirm(q)); } }; });
+  $$("#olist [data-link]").forEach(function(a){ a.onclick=function(ev){ ev.preventDefault(); try{ /^https:\/\/t\.me/.test(a.href)?tg.openTelegramLink(a.href):location.href=a.href; }catch(e){ location.href=a.href; } }; });
+}
+$$(".tabs button").forEach(function(b){ b.onclick=function(){ $$(".tabs button").forEach(function(x){x.classList.toggle("on",x===b);}); $("#t-sum").hidden=b.dataset.tab!=="sum"; $("#t-ord").hidden=b.dataset.tab!=="ord"; hap(); }; });
+$("#ref").onclick=function(){ hap(); load(); };
+if(!tg||!tg.initData){ $("#app").hidden=true; $("#deny").hidden=false; } else { load(); setInterval(load,60000); }
+</script>
+</body></html>
