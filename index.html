@@ -64,7 +64,7 @@ img{display:block;max-width:100%}
 .links{display:flex;gap:10px;justify-content:center;margin-top:10px}
 .links a{color:var(--blue2);text-decoration:none;background:#fff;border-radius:99px;padding:8px 14px;box-shadow:0 3px 0 var(--line);font-size:14px}
 /* ichki sahifa sarlavhasi */
-.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 0 10px}
+.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 16px 10px;margin:0 -16px;background:rgba(255,247,232,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .back{width:44px;height:44px;border-radius:15px;background:#fff;box-shadow:0 4px 0 rgba(27,37,89,.15);font-size:26px;display:grid;place-items:center;font-family:Fredoka}
 .bar h2{margin:0;font-size:23px;font-weight:700;flex:1;color:var(--ink)}
 .pill{background:#fff;border-radius:99px;padding:7px 13px;font-size:14px;box-shadow:0 3px 0 rgba(27,37,89,.15);white-space:nowrap;font-family:Fredoka;font-weight:600}
@@ -291,7 +291,7 @@ img{display:block;max-width:100%}
   <label class="fld"><span>Izoh (ixtiyoriy)</span><textarea id="o-note" rows="2" maxlength="300" placeholder="Masalan: tish yuvishni yoqtirmaydi, mashinani yaxshi ko‘radi"></textarea></label>
   <label class="chk" id="o-cwrap" hidden><input type="checkbox" id="o-consent"><span>Roziman: multfilm Odobim YouTube va Instagram sahifalarida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.</span></label>
   <button class="btn pink" id="o-send">🎬 Buyurtma berish</button>
-  <p class="small">Buyurtmadan keyin bot to‘lov ma’lumotini yuboradi. Multfilmda faqat Halili, Oisha, Maryam, Rayyona va sizning farzandingiz bo‘ladi.</p>
+  <p class="small">Buyurtmadan keyin to‘lov shu yerning o‘zida: kartaga o‘tkazasiz va chekni yuklaysiz. Multfilmda faqat Halili, Oisha, Maryam, Rayyona va sizning farzandingiz bo‘ladi.</p>
   </div>
   <div id="odone"></div>
 </section>
@@ -300,6 +300,10 @@ img{display:block;max-width:100%}
 <canvas class="confetti" id="cf"></canvas>
 
 <script>
+/* yangi versiya chiqsa, eski keshni chetlab o'tish */
+(function(){ var V=9; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
+  if(j&&j.v>V){ var k="odv"+j.v; if(!sessionStorage.getItem(k)){ sessionStorage.setItem(k,1); location.replace(location.pathname+"?v="+j.v+"&t="+Date.now()+location.hash); } } }).catch(function(){}); }catch(e){} })();
+
 (function(){
 "use strict";
 var tg = (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData !== undefined) ? Telegram.WebApp : null;
