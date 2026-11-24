@@ -5,7 +5,16 @@
 const APP_URL = "https://mukhibullokh.github.io/odobim-bot/";
 const EPISODES_URL = APP_URL + "episodes.json";
 const BANNER = "https://d8j0ntlcm91z4.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/hf_20261124_105810_103267b5-c68a-4097-b182-6e4db592fc25.png";
-const BATCH = 40; // bir daqiqada yuboriladigan xabarlar soni (bepul tarif cheklovi ichida)
+const BATCH = 40;
+const ADMIN_ID = 5991137115;            // buyurtmalar va cheklar shu Telegram akkauntga keladi
+const CARD = "8600 1404 0140 4463";      // Sisters Cooking'dagi to'lov kartasi
+const CARD_OWNER = "Farhodov Muhibulloh";
+const TARIFFS = {
+  oila: { name: "🎁 Oilaviy", price: 149000, desc: "Multfilm faqat sizning oilangizga beriladi" },
+  dost: { name: "⭐ Odobim do‘sti", price: 299000, desc: "Multfilm sizga beriladi va Odobim YouTube kanalida chiqadi" }
+};
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); // bir daqiqada yuboriladigan xabarlar soni (bepul tarif cheklovi ichida)
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -95,9 +104,34 @@ const HELP =
 
 async function onMessage(env, m) {
   if (!m.from || m.from.is_bot || !m.chat || m.chat.type !== "private") return;
-  const text = (m.text || "").trim();
+  const text = (m.text || m.caption || "").trim();
   const { u } = await saveUser(env, m.from);
   const id = m.from.id;
+  const hasMedia = m.photo || m.document || m.video;
+
+  // Admin: tayyor multfilmni "#123" izohi bilan yuborsa — buyurtmachiga yetkaziladi
+  if (id === ADMIN_ID && hasMedia) {
+    const mm = text.match(/#(\d+)/);
+    if (mm) {
+      const o = await getJ(env, "o:" + mm[1], null);
+      if (!o) return tg(env, "sendMessage", { chat_id: id, text: "❗ #" + mm[1] + " buyurtma topilmadi." });
+      await tg(env, "sendMessage", { chat_id: o.uid, text: `🎉 ${o.child} uchun multfilm tayyor! Marhamat, tomosha qiling 🎬` });
+      const r = await tg(env, "copyMessage", { chat_id: o.uid, from_chat_id: id, message_id: m.message_id, caption: `🎬 ${o.child} va Odobim — maxsus multfilm 💛\nDo‘stlaringga ham yubor 👇 @odobimbot` });
+      if (r.ok) { o.status = "delivered"; await putJ(env, "o:" + o.id, o); }
+      return tg(env, "sendMessage", { chat_id: id, text: r.ok ? `✅ #${o.id} multfilm ${o.parent}ga yuborildi.` : "❗ Yuborib bo‘lmadi: " + (r.description || "") });
+    }
+  }
+  // Buyurtmachi chek yoki bola rasmini yuborsa — adminga yetkaziladi
+  if (hasMedia && id !== ADMIN_ID) {
+    const last = await env.DB.get("lastOrder:" + id);
+    const o = last ? await getJ(env, "o:" + last, null) : null;
+    if (o) {
+      await tg(env, "copyMessage", { chat_id: ADMIN_ID, from_chat_id: id, message_id: m.message_id,
+        caption: `📎 #${o.id} — ${o.parent} (${o.child})\n${o.status === "paid" ? "To‘lov tasdiqlangan. Bu bolaning rasmi bo‘lishi mumkin." : "Chek yoki bolaning rasmi"}`,
+        reply_markup: o.status === "paid" ? undefined : { inline_keyboard: [[{ text: "✅ To‘lov tasdiqlandi", callback_data: "pay:" + o.id }, { text: "❌ Rad etish", callback_data: "rej:" + o.id }]] } });
+      return tg(env, "sendMessage", { chat_id: id, text: "✅ Qabul qilindi! Tekshirib, tez orada xabar beramiz." });
+    }
+  }
 
   if (text.startsWith("/start")) {
     const arg = text.split(" ")[1] || "";
@@ -116,6 +150,22 @@ async function onMessage(env, m) {
     return tg(env, "sendMessage", { chat_id: id, text: u.news ? "📺 Yangi multfilm chiqqanda xabar beraman." : "🔕 Yangi multfilm xabarlari o‘chirildi." });
   }
   return tg(env, "sendMessage", { chat_id: id, text: "O‘yinlarni ochish uchun pastdagi tugmani bosing 👇\n\n" + HELP, reply_markup: appButton() });
+}
+
+async function onCallback(env, q) {
+  const [act, oid] = String(q.data || "").split(":");
+  if (q.from.id !== ADMIN_ID) return tg(env, "answerCallbackQuery", { callback_query_id: q.id });
+  const o = await getJ(env, "o:" + oid, null);
+  if (!o) return tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Buyurtma topilmadi" });
+  if (act === "pay") {
+    o.status = "paid"; o.paidAt = Date.now(); await putJ(env, "o:" + o.id, o);
+    await tg(env, "sendMessage", { chat_id: o.uid, text: `🎉 To‘lov tasdiqlandi! ${o.child} uchun multfilm tayyorlanmoqda. 1–2 kun ichida shu chatga yuboramiz 💛\n\nFarzandingizning rasmini hali yubormagan bo‘lsangiz, hozir yuborishingiz mumkin.` });
+  } else if (act === "rej") {
+    o.status = "rejected"; await putJ(env, "o:" + o.id, o);
+    await tg(env, "sendMessage", { chat_id: o.uid, text: `❌ Chek tasdiqlanmadi. Iltimos, to‘lovni tekshirib, chekni qayta yuboring yoki savolingizni shu yerga yozing.` });
+  }
+  await tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: act === "pay" ? "Tasdiqlandi ✅" : "Rad etildi" });
+  if (q.message) await tg(env, "editMessageReplyMarkup", { chat_id: q.message.chat.id, message_id: q.message.message_id, reply_markup: { inline_keyboard: [[{ text: act === "pay" ? "✅ #" + o.id + " to‘langan" : "❌ #" + o.id + " rad etilgan", callback_data: "x" }]] } });
 }
 
 /* ---------- o'yin API ---------- */
@@ -152,6 +202,52 @@ async function api(req, env, path) {
     }
     rows.sort((a, b) => b.tr - a.tr);
     return json({ ok: true, rows: rows.slice(0, 50), friends: friends.length });
+  }
+  if (path === "/api/order" && req.method === "POST") {
+    const t = TARIFFS[body.tariff] ? body.tariff : "oila";
+    const clean = (v, n) => String(v || "").replace(/[<>]/g, "").trim().slice(0, n);
+    const o = {
+      id: 0, uid: id, at: Date.now(), status: "new", tariff: t, price: TARIFFS[t].price,
+      child: clean(body.child, 30), age: clean(body.age, 10), gender: body.gender === "qiz" ? "qiz" : "o‘g‘il",
+      look: clean(body.look, 200), topic: clean(body.topic, 120), note: clean(body.note, 300),
+      consent: t === "dost" ? !!body.consent : false,
+      parent: [user.first_name, user.last_name].filter(Boolean).join(" ").slice(0, 40), username: user.username || ""
+    };
+    if (!o.child) return json({ ok: false, error: "name" }, 400);
+    if (t === "dost" && !o.consent) return json({ ok: false, error: "consent" }, 400);
+    const seq = Number(await env.DB.get("orderSeq") || 100) + 1;
+    o.id = seq;
+    await env.DB.put("orderSeq", String(seq));
+    await putJ(env, "o:" + seq, o);
+    await env.DB.put("lastOrder:" + id, String(seq));
+    await saveUser(env, user);
+    await tg(env, "sendMessage", { chat_id: id, parse_mode: "HTML", text:
+`🎬 <b>Buyurtma #${seq} qabul qilindi!</b>
+
+👶 ${esc(o.child)} (${esc(o.age)} yosh, ${o.gender})
+📚 Mavzu: ${esc(o.topic)}
+${TARIFFS[t].name} — <b>${fmt(o.price)} so‘m</b>
+
+💳 <b>To‘lov:</b> quyidagi kartaga <b>${fmt(o.price)} so‘m</b> o‘tkazing:
+<code>${CARD}</code>
+${CARD_OWNER}
+
+📸 Keyin to‘lov chekini (skrinshot) shu chatga yuboring.
+🧒 Xohlasangiz, farzandingizning rasmini ham yuboring — qahramon unga o‘xshab chiqadi. Rasm faqat qahramon yasash uchun ishlatiladi va ish tugagach o‘chiriladi.
+
+⏳ To‘lov tasdiqlangach, multfilm 1–2 kun ichida tayyor bo‘ladi.` });
+    await tg(env, "sendMessage", { chat_id: ADMIN_ID, parse_mode: "HTML", text:
+`🆕 <b>Yangi buyurtma #${seq}</b>
+${TARIFFS[t].name} — ${fmt(o.price)} so‘m${o.consent ? "\n✅ YouTube’ga qo‘yishga rozi" : ""}
+
+👶 Bola: <b>${esc(o.child)}</b>, ${esc(o.age)} yosh, ${o.gender}
+👕 Ko‘rinishi: ${esc(o.look) || "—"}
+📚 Mavzu: ${esc(o.topic)}
+📝 Izoh: ${esc(o.note) || "—"}
+👤 Ota-ona: ${esc(o.parent)}${o.username ? " @" + esc(o.username) : ""} (id ${id})
+
+Chek kelsa, shu yerga yuboraman. Tayyor multfilmni yuborish: videoni <code>#${seq}</code> izohi bilan shu botga yuboring.` });
+    return json({ ok: true, id: seq });
   }
   return json({ ok: true });
 }
@@ -229,6 +325,7 @@ export default {
       if (req.headers.get("X-Telegram-Bot-Api-Secret-Token") !== want) return new Response("forbidden", { status: 403 });
       const upd = await req.json().catch(() => ({}));
       if (upd.message) await onMessage(env, upd.message);
+      else if (upd.callback_query) await onCallback(env, upd.callback_query);
       return new Response("ok");
     }
     if (url.pathname.startsWith("/api/")) return api(req, env, url.pathname);

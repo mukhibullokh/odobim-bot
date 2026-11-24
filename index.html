@@ -142,6 +142,33 @@ img{display:block;max-width:100%}
 #v-quiz .note{margin-top:8px;padding:9px 12px;font-size:14px}
 #v-quiz .btn{margin-top:10px;padding:12px;font-size:17px}
 #v-quiz .prog{height:8px;margin-bottom:8px}
+/* buyurtma */
+.order{position:relative;display:block;width:100%;border-radius:var(--r);overflow:hidden;margin-bottom:14px;border:4px solid #fff;background:#ff5fa2;box-shadow:0 7px 0 #c2306f,0 12px 24px rgba(194,48,111,.3);text-align:left;transition:transform .12s}
+.order:active{transform:translateY(4px) scale(.98)}
+.order img{width:100%;aspect-ratio:752/560;object-fit:cover}
+.order .ot{position:absolute;left:0;right:0;bottom:0;padding:34px 14px 12px;background:linear-gradient(transparent,rgba(150,20,80,.88));color:#fff}
+.order b{font-family:Fredoka;font-size:22px;font-weight:700;display:block;line-height:1.1}
+.order small{font-size:13px}
+.order .new{position:absolute;right:10px;top:10px;background:var(--gold);color:#5a3400;font-family:Fredoka;font-weight:700;font-size:13px;padding:4px 10px;border-radius:99px;box-shadow:0 3px 0 var(--gold2);animation:pulse 1.6s infinite}
+.ovid{width:100%;border-radius:20px;border:4px solid #fff;background:#000;box-shadow:0 5px 0 rgba(27,37,89,.15);max-height:62vh}
+.sect{font-family:Fredoka;font-size:19px;font-weight:600;margin:18px 2px 8px}
+.tars{display:grid;gap:10px}
+.tar{display:flex;gap:12px;align-items:center;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 4px 0 rgba(27,37,89,.12);text-align:left;border:3px solid transparent}
+.tar.on{border-color:#ff5fa2;background:#fff0f7}
+.tar .em{font-size:30px}
+.tar div{flex:1}
+.tar b{display:block;font-family:Fredoka;font-size:17px}
+.tar small{color:var(--muted);font-size:13px;line-height:1.25;display:block}
+.tar i{font-style:normal;font-family:Fredoka;font-weight:700;font-size:16px;color:#c2306f;white-space:nowrap}
+.fld{display:block;margin-bottom:10px}
+.fld span{display:block;font-size:13px;color:var(--muted);margin:0 0 4px 4px}
+.fld input,.fld select,.fld textarea{width:100%;font:inherit;font-weight:700;font-size:16px;color:var(--ink);background:#fff;border:2px solid #e6e9f5;border-radius:14px;padding:12px;outline:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#ff5fa2}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chk{display:flex;gap:10px;align-items:flex-start;background:#fff7d6;border-radius:14px;padding:12px;font-size:14px;line-height:1.35;margin-bottom:10px}
+.chk input{width:22px;height:22px;flex:none;margin-top:1px}
+.btn.pink{background:#ff5fa2;box-shadow:0 5px 0 #c2306f}
+.small{font-size:12.5px;color:var(--muted);text-align:center;margin:10px 4px;line-height:1.35}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
 </head>
@@ -161,6 +188,11 @@ img{display:block;max-width:100%}
   <button class="play" data-go="oyin">
     <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/71ce17b7-fe69-4cea-ab8f-cd08ef0a5b6a.jpg" alt="">
     <div class="pl"><div><b>Odob yo‘li</b><small>Yugur, tanga yig‘, savolga javob ber</small></div><span class="pbtn">▶ O‘YNASH</span></div>
+  </button>
+  <button class="order" data-go="order">
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/395bc855-959c-4e51-b229-1e40487a3ea8.jpg" alt="">
+    <span class="new">YANGI</span>
+    <div class="ot"><b>🎬 Farzandingiz Odobimda!</b><small>Halili va opalari bilan maxsus multfilm</small></div>
   </button>
   <div class="cards4">
     <button class="c4 orange" data-go="juft"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/02fda3d3-759f-4b94-8bdd-e4205c3ca12c.jpg" alt=""><span>Juftini top</span></button>
@@ -211,6 +243,35 @@ img{display:block;max-width:100%}
   <div class="bar"><button class="back" data-back>‹</button><h2>Multfilmlar</h2></div>
   <div class="shead sky"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/e24d2d04-e138-4d17-8eb8-4efdcae5b5f8.jpg" alt=""><p>Halili va opalarining sarguzashtlari 🍿</p></div>
   <div id="w-eps" class="eps"></div>
+</section>
+
+<!-- BUYURTMA -->
+<section class="view" id="v-order">
+  <div class="bar"><button class="back" data-back>‹</button><h2>Farzandim uchun multfilm</h2></div>
+  <video class="ovid" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/cbed4594-7be8-495e-901f-f3d4d523bc7b.mp4" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/395bc855-959c-4e51-b229-1e40487a3ea8.jpg" controls playsinline preload="none"></video>
+  <p class="small">Namuna: Aziz Halili va opalari bilan birga o‘ynab, yig‘ishtirishni o‘rgandi. Sizning farzandingiz ham xuddi shunday multfilm qahramoni bo‘ladi!</p>
+  <div id="ofrm">
+  <div class="sect">1. Tarifni tanlang</div>
+  <div class="tars" id="otars">
+    <button class="tar on" data-t="oila"><span class="em">🎁</span><div><b>Oilaviy</b><small>Multfilm faqat sizga beriladi, hech qayerga qo‘yilmaydi</small></div><i>149 000</i></button>
+    <button class="tar" data-t="dost"><span class="em">⭐</span><div><b>Odobim do‘sti</b><small>Sizga beriladi va Odobim YouTube kanalida chiqadi</small></div><i>299 000</i></button>
+  </div>
+  <div class="sect">2. Farzandingiz haqida</div>
+  <div class="row2">
+    <label class="fld"><span>Ismi</span><input id="o-child" maxlength="30" placeholder="Masalan: Aziz"></label>
+    <label class="fld"><span>Yoshi</span><input id="o-age" maxlength="10" inputmode="numeric" placeholder="5"></label>
+  </div>
+  <label class="fld"><span>O‘g‘il yoki qiz</span><select id="o-gender"><option value="o'g'il">O‘g‘il bola</option><option value="qiz">Qiz bola</option></select></label>
+  <label class="fld"><span>Ko‘rinishi (soch, kiyim, rangi)</span><input id="o-look" maxlength="200" placeholder="Jingalak soch, ko‘k futbolka"></label>
+  <label class="fld"><span>Multfilm mavzusi</span><select id="o-topic">
+    <option>Salom berish</option><option>Tish yuvish</option><option>O‘yinchoqlarni yig‘ishtirish</option><option>Ota-onaga yordam berish</option>
+    <option>Ovqatdan oldin qo‘l yuvish</option><option>O‘z vaqtida uxlash</option><option>Ukaga, opaga mehribonlik</option><option>Boshqa (izohda yozing)</option></select></label>
+  <label class="fld"><span>Izoh (ixtiyoriy)</span><textarea id="o-note" rows="2" maxlength="300" placeholder="Masalan: tish yuvishni yoqtirmaydi, mashinani yaxshi ko‘radi"></textarea></label>
+  <label class="chk" id="o-cwrap" hidden><input type="checkbox" id="o-consent"><span>Roziman: multfilm Odobim YouTube kanalida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.</span></label>
+  <button class="btn pink" id="o-send">🎬 Buyurtma berish</button>
+  <p class="small">Buyurtmadan keyin bot to‘lov ma’lumotini yuboradi. Farzandingiz rasmini ham botga yuborishingiz mumkin. Rasm faqat qahramon yasash uchun ishlatiladi va o‘chiriladi. Multfilmda faqat Halili, Oisha, Maryam, Rayyona va sizning farzandingiz bo‘ladi.</p>
+  </div>
+  <div id="odone"></div>
 </section>
 
 </div>
@@ -412,6 +473,25 @@ function wRender(){
     if(!released(e)){ try{ tg ? tg.showAlert("Bu multfilm tez orada chiqadi! 🌟") : alert("Bu multfilm tez orada chiqadi! 🌟"); }catch(x){} return; }
     openLink(e.y ? "https://www.youtube.com/shorts/"+e.y : CH); }; });
 }
+
+
+/* ---------- BUYURTMA ---------- */
+var API="https://odobim-bot.muhibulloh2405.workers.dev", oT="oila";
+$$("#otars .tar").forEach(function(b){ b.onclick=function(){ $$("#otars .tar").forEach(function(x){x.classList.remove("on");}); b.classList.add("on"); oT=b.dataset.t; $("#o-cwrap").hidden=oT!=="dost"; hap(); }; });
+$("#o-send").onclick=function(){
+  var child=$("#o-child").value.trim(), btn=$("#o-send");
+  if(!child){ $("#o-child").focus(); try{ tg&&tg.showAlert("Farzandingiz ismini yozing 🙂"); }catch(e){} return; }
+  if(oT==="dost" && !$("#o-consent").checked){ try{ tg ? tg.showAlert("YouTube tarifi uchun rozilik belgisini qo‘ying.") : alert("Rozilik belgisini qo‘ying"); }catch(e){} return; }
+  if(!tg || !tg.initData){ alert("Buyurtma berish uchun ilovani Telegram’da @odobimbot orqali oching."); return; }
+  btn.disabled=true; btn.textContent="Yuborilmoqda…";
+  fetch(API+"/api/order",{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify({tariff:oT,consent:$("#o-consent").checked,child:child,age:$("#o-age").value,gender:$("#o-gender").value==="qiz"?"qiz":"o'g'il",look:$("#o-look").value,topic:$("#o-topic").value,note:$("#o-note").value})})
+   .then(function(r){return r.json();}).then(function(r){
+     if(!r.ok) throw 0;
+     hap("ok"); confetti(); $("#ofrm").hidden=true;
+     $("#odone").innerHTML='<div class="done"><div class="big">🎬</div><h3>Buyurtma #'+r.id+' qabul qilindi!</h3><p>To‘lov ma’lumotini botga yubordik. Botga o‘tib, chekni yuboring.</p><button class="btn pink" id="o-close">Botga o‘tish</button></div>';
+     $("#o-close").onclick=function(){ try{ tg.close(); }catch(e){} };
+   }).catch(function(){ btn.disabled=false; btn.textContent="🎬 Buyurtma berish"; try{ tg.showAlert("Xatolik bo‘ldi, qayta urinib ko‘ring."); }catch(e){} });
+};
 
 DB.load(function(){ homeRender(); if (location.hash && $("#v-"+location.hash.slice(1))) go(location.hash.slice(1)); });
 })();
