@@ -4,6 +4,7 @@
 
 const APP_URL = "https://mukhibullokh.github.io/odobim-bot/";
 const EPISODES_URL = APP_URL + "episodes.json";
+const APP_VER = "?v=5";
 const BANNER = "https://d8j0ntlcm91z4.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/hf_20261124_105810_103267b5-c68a-4097-b182-6e4db592fc25.png";
 const BATCH = 40;
 const ADMIN_ID = 5991137115;            // buyurtmalar va cheklar shu Telegram akkauntga keladi
@@ -66,7 +67,7 @@ async function tg(env, method, body) {
   });
   return r.json().catch(() => ({ ok: false }));
 }
-const appButton = (text = "🎮 O‘yinlarni ochish", hash = "") => ({ inline_keyboard: [[{ text, web_app: { url: APP_URL + hash } }]] });
+const appButton = (text = "🎮 O‘yinlarni ochish", hash = "") => ({ inline_keyboard: [[{ text, web_app: { url: APP_URL + APP_VER + hash } }]] });
 
 /* ---------- ma'lumotlar ---------- */
 const getJ = async (env, k, d) => { const v = await env.DB.get(k); if (!v) return d; try { return JSON.parse(v); } catch (e) { return d; } };
@@ -111,7 +112,8 @@ Pastdagi tugmani bosing va o‘ynang! 🌟`;
 const HELP =
 `🎮 /start — o‘yinlarni ochish
 🔔 /eslatma — kunlik eslatmani yoqish yoki o‘chirish
-📺 /yangiliklar — yangi multfilm xabarini yoqish yoki o‘chirish`;
+📺 /yangiliklar — yangi multfilm xabarini yoqish yoki o‘chirish
+🎬 /buyurtma — farzandingiz uchun maxsus multfilm`;
 
 async function onMessage(env, m) {
   if (!m.from || m.from.is_bot || !m.chat || m.chat.type !== "private") return;
@@ -148,9 +150,12 @@ async function onMessage(env, m) {
     const arg = text.split(" ")[1] || "";
     const mm = arg.match(/^(?:of|ref)_(\d+)$/);
     if (mm) await addFriend(env, id, Number(mm[1]));
-    const r = await tg(env, "sendPhoto", { chat_id: id, photo: BANNER, caption: WELCOME(m.from.first_name), reply_markup: appButton() });
+    const r = await tg(env, "sendPhoto", { chat_id: id, photo: BANNER, caption: WELCOME(m.from.first_name), reply_markup: { inline_keyboard: [appButton().inline_keyboard[0], appButton("🎬 Farzandim uchun multfilm", "#order").inline_keyboard[0]] } });
     if (!r.ok) await tg(env, "sendMessage", { chat_id: id, text: WELCOME(m.from.first_name), reply_markup: appButton() });
     return;
+  }
+  if (text.startsWith("/buyurtma")) {
+    return tg(env, "sendMessage", { chat_id: id, text: "🎬 Farzandingiz Halili va opalari bilan multfilm qahramoni bo‘ladi!\n\nPastdagi tugmani bosing: tarifni tanlang, farzandingiz haqida yozing va rasmini qo‘shing 📷", reply_markup: appButton("🎬 Buyurtma berish", "#order") });
   }
   if (text.startsWith("/eslatma")) {
     u.remind = !u.remind; await putJ(env, "u:" + id, u);
@@ -324,7 +329,7 @@ async function scheduled(event, env) {
       await startJob(env, {
         kind: "news", photo: ep.img,
         text: `📺 Yangi multfilm chiqdi!\n\n${ep.n}-qism: ${ep.t}\n\nHalili va opalari bilan birga tomosha qiling! 🌟`,
-        markup: { inline_keyboard: [[{ text: "▶️ Tomosha qilish", url }], [{ text: "🎮 O‘yinlar", web_app: { url: APP_URL } }]] }
+        markup: { inline_keyboard: [[{ text: "▶️ Tomosha qilish", url }], [{ text: "🎮 O‘yinlar", web_app: { url: APP_URL + APP_VER } }]] }
       });
     }
   }
