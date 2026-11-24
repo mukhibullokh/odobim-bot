@@ -4,7 +4,7 @@
 
 const APP_URL = "https://mukhibullokh.github.io/odobim-bot/";
 const EPISODES_URL = APP_URL + "episodes.json";
-const APP_VER = "?v=6";
+const APP_VER = "?v=7";
 const BANNER = "https://d8j0ntlcm91z4.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/hf_20261124_105810_103267b5-c68a-4097-b182-6e4db592fc25.png";
 const BATCH = 40;
 const ADMIN_ID = 5991137115;            // buyurtmalar va cheklar shu Telegram akkauntga keladi
@@ -52,13 +52,14 @@ async function webAppUser(req, env) {
 }
 
 /* ---------- Telegram API ---------- */
-async function tgPhoto(env, chat_id, dataUrl, caption) {
+async function tgPhoto(env, chat_id, dataUrl, caption, markup) {
   const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(dataUrl || "");
   if (!m || m[2].length > 2800000) return { ok: false };
   const bin = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0));
   const fd = new FormData();
   fd.append("chat_id", String(chat_id));
   fd.append("caption", caption);
+  if (markup) fd.append("reply_markup", JSON.stringify(markup));
   fd.append("photo", new Blob([bin], { type: "image/" + m[1] }), "bola." + (m[1] === "jpeg" ? "jpg" : m[1]));
   const r = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendPhoto`, { method: "POST", body: fd });
   return r.json().catch(() => ({ ok: false }));
@@ -221,6 +222,21 @@ async function api(req, env, path) {
     rows.sort((a, b) => b.tr - a.tr);
     return json({ ok: true, rows: rows.slice(0, 50), friends: friends.length });
   }
+  if (path === "/api/order/receipt" && req.method === "POST") {
+    const o = await getJ(env, "o:" + Number(body.id), null);
+    if (!o || o.uid !== id) return json({ ok: false, error: "order" }, 404);
+    if (o.status === "paid") return json({ ok: true, status: "paid" });
+    const r = await tgPhoto(env, ADMIN_ID, body.photo, `🧾 Chek · buyurtma #${o.id} · ${o.child} · ${fmt(o.price)} so‘m\nOta-ona: ${o.parent}${o.username ? " @" + o.username : ""}`,
+      { inline_keyboard: [[{ text: "✅ To‘lov tasdiqlandi", callback_data: "pay:" + o.id }, { text: "❌ Rad etish", callback_data: "rej:" + o.id }]] });
+    if (!r.ok) return json({ ok: false, error: "photo" }, 400);
+    o.status = "check"; o.receiptAt = Date.now(); await putJ(env, "o:" + o.id, o);
+    return json({ ok: true, status: "check" });
+  }
+  if (path === "/api/order/status") {
+    const o = await getJ(env, "o:" + Number(body.id), null);
+    if (!o || o.uid !== id) return json({ ok: false }, 404);
+    return json({ ok: true, status: o.status });
+  }
   if (path === "/api/order" && req.method === "POST") {
     const t = TARIFFS[body.tariff] ? body.tariff : "oila";
     const clean = (v, n) => String(v || "").replace(/[<>]/g, "").trim().slice(0, n);
@@ -256,7 +272,7 @@ ${TARIFFS[t].name} — <b>${fmt(o.price)} so‘m</b>
 <code>${CARD}</code>
 ${CARD_OWNER}
 
-📸 Keyin to‘lov chekini (skrinshot) shu chatga yuboring.
+📸 Keyin to‘lov chekini (skrinshot) ilovaning o‘zida yoki shu chatga yuboring.
 ${o.photos ? "🧒 Farzandingiz rasmi qabul qilindi — qahramon unga o‘xshab chiqadi. Rasm faqat qahramon yasash uchun ishlatiladi va ish tugagach o‘chiriladi." : "🧒 Xohlasangiz, farzandingizning rasmini ham yuboring — qahramon unga o‘xshab chiqadi. Rasm faqat qahramon yasash uchun ishlatiladi va ish tugagach o‘chiriladi."}
 
 ⏳ To‘lov tasdiqlangach, multfilm 1–2 kun ichida tayyor bo‘ladi.` });

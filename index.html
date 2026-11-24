@@ -176,6 +176,15 @@ img{display:block;max-width:100%}
 .ph{position:relative;background:#eee center/cover;border:2px solid #fff;box-shadow:0 3px 0 rgba(27,37,89,.12)}
 .ph button{position:absolute;right:-6px;top:-6px;width:24px;height:24px;border-radius:50%;background:#ff5fa2;color:#fff;font-size:14px;line-height:24px;padding:0}
 .phnote{display:block;font-size:12px;color:var(--muted);margin:6px 4px 0}
+.pok{background:#e3f8e9;color:#1d7a3e;font-family:Fredoka;font-weight:600;border-radius:14px;padding:10px 14px;margin-top:14px}
+.pcard{background:linear-gradient(135deg,#5b3df5,#ff5fa2);color:#fff;border-radius:20px;padding:16px;box-shadow:0 6px 0 #3a22b8;display:flex;flex-direction:column;gap:2px}
+.pcard small{opacity:.85;font-size:12.5px}
+.pcard b{font-family:Fredoka;font-size:25px;letter-spacing:1px;margin:4px 0}
+.pcard span{font-size:14px;opacity:.95}
+.psum{font-family:Fredoka;font-size:21px;font-weight:700;background:rgba(255,255,255,.18);border-radius:12px;padding:6px 10px;align-self:flex-start;margin:10px 0 8px}
+.pcopy{background:#fff;color:#5b3df5;font-family:Fredoka;font-weight:600;font-size:15px;border-radius:12px;padding:10px}
+.pup{position:relative;overflow:hidden;display:block;text-align:center}
+.pup input{position:absolute;inset:0;width:100%;height:100%;opacity:0}
 .btn.pink{background:#ff5fa2;box-shadow:0 5px 0 #c2306f}
 .small{font-size:12.5px;color:var(--muted);text-align:center;margin:10px 4px;line-height:1.35}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
@@ -510,6 +519,40 @@ $("#o-file").onchange=function(){
   var fs=[].slice.call(this.files||[]).slice(0,3-oPh.length); this.value="";
   fs.forEach(function(f){ shrink(f,function(d){ if(d&&oPh.length<3){ oPh.push(d); phRender(); } }); });
 };
+var PRICE={oila:149000,dost:299000}, CARDN="8600 1404 0140 4463", oId=0, oTimer=0;
+function post(u,b){ return fetch(API+u,{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify(b)}).then(function(r){return r.json();}); }
+function payShow(id){
+  oId=id; var sum=PRICE[oT].toLocaleString("ru-RU").replace(/,/g," ");
+  $("#odone").innerHTML='<div class="pay">'+
+   '<div class="pok">✅ Buyurtma #'+id+' qabul qilindi</div>'+
+   '<div class="sect">3. To‘lov</div>'+
+   '<div class="pcard"><small>Shu kartaga o‘tkazing</small><b id="p-num">'+CARDN+'</b><span>Farhodov Muhibulloh</span>'+
+   '<div class="psum">'+sum+' so‘m</div><button class="pcopy" id="p-copy">📋 Karta raqamini nusxalash</button></div>'+
+   '<p class="small">Payme, Click yoki bank ilovangizda shu kartaga pul o‘tkazing, keyin chek rasmini shu yerga yuklang.</p>'+
+   '<label class="btn pink pup" id="p-up">🧾 Chekni yuklash<input type="file" id="p-file" accept="image/*"></label>'+
+   '<div id="p-st"></div></div>';
+  $("#p-copy").onclick=function(){ var t=CARDN.replace(/ /g,""), b=this;
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(function(){ var a=document.createElement("textarea"); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand("copy");}catch(e){} a.remove(); })
+    .then(function(){}); b.textContent="✅ Nusxalandi"; hap("ok"); setTimeout(function(){ b.textContent="📋 Karta raqamini nusxalash"; },2000); };
+  $("#p-file").onchange=function(){ var f=this.files&&this.files[0]; this.value=""; if(!f) return;
+    $("#p-st").innerHTML='<p class="small">Yuklanmoqda…</p>';
+    shrink(f,function(d){ if(!d){ $("#p-st").innerHTML='<p class="small">Rasm ochilmadi, boshqasini tanlang.</p>'; return; }
+      post("/api/order/receipt",{id:oId,photo:d}).then(function(r){ if(!r.ok) throw 0; payWait(); })
+      .catch(function(){ $("#p-st").innerHTML='<p class="small">Yuklanmadi. Qayta urinib ko‘ring yoki chekni botga yuboring.</p>'; }); }); };
+}
+function payWait(){
+  $("#p-up").style.display="none";
+  $("#p-st").innerHTML='<div class="done"><div class="big">⏳</div><h3>Chek tekshirilmoqda</h3><p>Odatda bir necha daqiqa. Tasdiqlansa, shu yerda va botda xabar chiqadi.</p><button class="btn" id="p-home">Bosh sahifaga</button></div>';
+  $("#p-home").onclick=function(){ go("home"); };
+  clearInterval(oTimer); oTimer=setInterval(function(){
+    post("/api/order/status",{id:oId}).then(function(r){
+      if(r.status==="paid"){ clearInterval(oTimer); confetti(); hap("ok");
+        $("#p-st").innerHTML='<div class="done"><div class="big">🎉</div><h3>To‘lov tasdiqlandi!</h3><p>Multfilm 1–2 kun ichida tayyor bo‘ladi va botga yuboriladi 💛</p></div>'; }
+      else if(r.status==="rejected"){ clearInterval(oTimer); $("#p-up").style.display="";
+        $("#p-st").innerHTML='<p class="small" style="color:#c2306f">❌ Chek tasdiqlanmadi. To‘lovni tekshirib, chekni qayta yuklang.</p>'; }
+    }).catch(function(){});
+  },8000);
+}
 $("#o-send").onclick=function(){
   var child=$("#o-child").value.trim(), btn=$("#o-send");
   if(!child){ $("#o-child").focus(); try{ tg&&tg.showAlert("Farzandingiz ismini yozing 🙂"); }catch(e){} return; }
@@ -520,9 +563,7 @@ $("#o-send").onclick=function(){
   fetch(API+"/api/order",{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify({tariff:oT,consent:$("#o-consent").checked,child:child,age:$("#o-age").value,gender:$("#o-gender").value==="qiz"?"qiz":"o'g'il",look:$("#o-look").value,topic:$("#o-topic").value,note:$("#o-note").value,photos:oPh,photoConsent:$("#o-pconsent").checked})})
    .then(function(r){return r.json();}).then(function(r){
      if(!r.ok) throw 0;
-     hap("ok"); confetti(); $("#ofrm").hidden=true;
-     $("#odone").innerHTML='<div class="done"><div class="big">🎬</div><h3>Buyurtma #'+r.id+' qabul qilindi!</h3><p>To‘lov ma’lumotini botga yubordik. Botga o‘tib, chekni yuboring.</p><button class="btn pink" id="o-close">Botga o‘tish</button></div>';
-     $("#o-close").onclick=function(){ try{ tg.close(); }catch(e){} };
+     hap("ok"); confetti(); $("#ofrm").hidden=true; payShow(r.id);
    }).catch(function(){ btn.disabled=false; btn.textContent="🎬 Buyurtma berish"; try{ tg.showAlert("Xatolik bo‘ldi, qayta urinib ko‘ring."); }catch(e){} });
 };
 
