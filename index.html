@@ -273,7 +273,8 @@ img{display:block;max-width:100%}
   <label class="fld"><span>O‘g‘il yoki qiz</span><select id="o-gender"><option value="o'g'il">O‘g‘il bola</option><option value="qiz">Qiz bola</option></select></label>
   <div class="fld"><span>Farzandingiz rasmi (ixtiyoriy, 3 tagacha)</span>
     <div class="phs" id="o-phs"><label class="phadd">📷<small>Rasm qo‘shish</small><input type="file" id="o-file" accept="image/*" multiple></label></div>
-    <small class="phnote">Yuzi aniq ko‘ringan rasm bo‘lsin. Rasm faqat qahramon yasash uchun ishlatiladi va o‘chiriladi.</small></div>
+    <small class="phnote">Yuzi aniq ko‘ringan rasm bo‘lsin.</small></div>
+  <label class="chk" id="o-pwrap" hidden><input type="checkbox" id="o-pconsent"><span>Men ushbu bolaning ota-onasi (vasiysi)man. Rasmini Odobimga faqat multfilm qahramonini yasash uchun berishga roziman. Rasm boshqa joyda ishlatilmaydi, hech kimga berilmaydi va ish tugagach o‘chiriladi.</span></label>
   <label class="fld"><span>Ko‘rinishi (soch, kiyim, rangi)</span><input id="o-look" maxlength="200" placeholder="Jingalak soch, ko‘k futbolka"></label>
   <label class="fld"><span>Multfilm mavzusi</span><select id="o-topic">
     <option>Salom berish</option><option>Tish yuvish</option><option>O‘yinchoqlarni yig‘ishtirish</option><option>Ota-onaga yordam berish</option>
@@ -497,6 +498,7 @@ function phRender(){
     var x=document.createElement("button"); x.textContent="×"; x.onclick=function(){ oPh.splice(i,1); phRender(); }; e.appendChild(x);
     box.insertBefore(e,box.lastElementChild); });
   box.lastElementChild.style.display=oPh.length>=3?"none":"";
+  $("#o-pwrap").hidden=!oPh.length; if(!oPh.length) $("#o-pconsent").checked=false;
 }
 function shrink(f,cb){
   var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){
@@ -512,9 +514,10 @@ $("#o-send").onclick=function(){
   var child=$("#o-child").value.trim(), btn=$("#o-send");
   if(!child){ $("#o-child").focus(); try{ tg&&tg.showAlert("Farzandingiz ismini yozing 🙂"); }catch(e){} return; }
   if(oT==="dost" && !$("#o-consent").checked){ try{ tg ? tg.showAlert("YouTube tarifi uchun rozilik belgisini qo‘ying.") : alert("Rozilik belgisini qo‘ying"); }catch(e){} return; }
+  if(oPh.length && !$("#o-pconsent").checked){ $("#o-pwrap").scrollIntoView({block:"center"}); try{ tg ? tg.showAlert("Rasm yuborish uchun rozilik belgisini qo‘ying.") : alert("Rasm uchun rozilik belgisini qo‘ying"); }catch(e){} return; }
   if(!tg || !tg.initData){ alert("Buyurtma berish uchun ilovani Telegram’da @odobimbot orqali oching."); return; }
   btn.disabled=true; btn.textContent="Yuborilmoqda…";
-  fetch(API+"/api/order",{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify({tariff:oT,consent:$("#o-consent").checked,child:child,age:$("#o-age").value,gender:$("#o-gender").value==="qiz"?"qiz":"o'g'il",look:$("#o-look").value,topic:$("#o-topic").value,note:$("#o-note").value,photos:oPh})})
+  fetch(API+"/api/order",{method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":tg.initData},body:JSON.stringify({tariff:oT,consent:$("#o-consent").checked,child:child,age:$("#o-age").value,gender:$("#o-gender").value==="qiz"?"qiz":"o'g'il",look:$("#o-look").value,topic:$("#o-topic").value,note:$("#o-note").value,photos:oPh,photoConsent:$("#o-pconsent").checked})})
    .then(function(r){return r.json();}).then(function(r){
      if(!r.ok) throw 0;
      hap("ok"); confetti(); $("#ofrm").hidden=true;

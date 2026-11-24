@@ -4,10 +4,12 @@
 
 const APP_URL = "https://mukhibullokh.github.io/odobim-bot/";
 const EPISODES_URL = APP_URL + "episodes.json";
-const APP_VER = "?v=5";
+const APP_VER = "?v=6";
 const BANNER = "https://d8j0ntlcm91z4.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/hf_20261124_105810_103267b5-c68a-4097-b182-6e4db592fc25.png";
 const BATCH = 40;
 const ADMIN_ID = 5991137115;            // buyurtmalar va cheklar shu Telegram akkauntga keladi
+const PHOTO_CONSENT = "Men ushbu bolaning ota-onasi (vasiysi)man. Rasmini Odobimga faqat multfilm qahramonini yasash uchun berishga roziman. Rasm boshqa joyda ishlatilmaydi, hech kimga berilmaydi va ish tugagach o‘chiriladi.";
+const YT_CONSENT = "Roziman: multfilm Odobim YouTube kanalida farzandimning faqat ismi bilan chiqsin. Istalgan payt so‘rasam, olib tashlanadi.";
 const CARD = "8600 1404 0140 4463";      // Sisters Cooking'dagi to'lov kartasi
 const CARD_OWNER = "Farhodov Muhibulloh";
 const TARIFFS = {
@@ -231,7 +233,11 @@ async function api(req, env, path) {
     };
     if (!o.child) return json({ ok: false, error: "name" }, 400);
     const photos = (Array.isArray(body.photos) ? body.photos : []).slice(0, 3);
+    if (photos.length && !body.photoConsent) return json({ ok: false, error: "photoConsent" }, 400);
     o.photos = photos.length;
+    const stamp = new Date(Date.now() + 5 * 3600e3).toISOString().slice(0, 16).replace("T", " ") + " (Toshkent)";
+    if (photos.length) o.photoConsent = { at: stamp, text: PHOTO_CONSENT };
+    if (o.consent) o.ytConsent = { at: stamp, text: YT_CONSENT };
     if (t === "dost" && !o.consent) return json({ ok: false, error: "consent" }, 400);
     const seq = Number(await env.DB.get("orderSeq") || 100) + 1;
     o.id = seq;
@@ -267,6 +273,16 @@ ${TARIFFS[t].name} — ${fmt(o.price)} so‘m${o.consent ? "\n✅ YouTube’ga q
 
 Chek kelsa, shu yerga yuboraman. Tayyor multfilmni yuborish: videoni <code>#${seq}</code> izohi bilan shu botga yuboring.` });
     for (let i = 0; i < photos.length; i++) await tgPhoto(env, ADMIN_ID, photos[i], `#${seq} · ${o.child} · rasm ${i + 1}`);
+    if (o.photoConsent || o.ytConsent) {
+      const who = `${esc(o.parent)}${o.username ? " (@" + esc(o.username) + ")" : ""}, Telegram ID ${id}`;
+      const doc = (title, c) => `📄 <b>${title}</b>\nBuyurtma #${seq} · Bola: ${esc(o.child)}\nKim: ${who}\nVaqt: ${c.at}\n\n«${c.text}»\n\n✅ Ota-ona ilovada belgini bosib tasdiqladi.`;
+      const parts = [];
+      if (o.photoConsent) parts.push(doc("Rasmdan foydalanishga rozilik", o.photoConsent));
+      if (o.ytConsent) parts.push(doc("YouTube’ga qo‘yishga rozilik", o.ytConsent));
+      const r = await tg(env, "sendMessage", { chat_id: ADMIN_ID, parse_mode: "HTML", text: parts.join("\n\n———\n\n") });
+      if (r && r.result) await tg(env, "pinChatMessage", { chat_id: ADMIN_ID, message_id: r.result.message_id, disable_notification: true });
+      await tg(env, "sendMessage", { chat_id: id, parse_mode: "HTML", text: "📄 <b>Roziligingiz qayd etildi</b> — " + (o.photoConsent || o.ytConsent).at + ".\nIstalgan payt rasmni yoki videoni o‘chirishni so‘rashingiz mumkin — shu chatga yozing." });
+    }
     return json({ ok: true, id: seq });
   }
   return json({ ok: true });

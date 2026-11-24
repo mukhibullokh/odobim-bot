@@ -51,6 +51,6 @@ jobs:
           api() { curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/$1" -H 'Content-Type: application/json' -d "$2" | head -c 300; echo; }
           api setWebhook "{\"url\":\"$URL/webhook\",\"secret_token\":\"$SECRET\",\"allowed_updates\":[\"message\",\"callback_query\"],\"drop_pending_updates\":false}"
           api setMyCommands '{"commands":[{"command":"start","description":"O‘yinlarni ochish"},{"command":"eslatma","description":"Kunlik eslatmani yoqish/o‘chirish"},{"command":"yangiliklar","description":"Yangi multfilm xabarlari"},{"command":"buyurtma","description":"Farzandim uchun multfilm"}]}'
-          api setChatMenuButton '{"menu_button":{"type":"web_app","text":"🎮 O‘yinlar","web_app":{"url":"https://mukhibullokh.github.io/odobim-bot/?v=5"}}}'
+          api setChatMenuButton '{"menu_button":{"type":"web_app","text":"🎮 O‘yinlar","web_app":{"url":"https://mukhibullokh.github.io/odobim-bot/?v=6"}}}'
           echo "### ✅ Bot ulandi" >> $GITHUB_STEP_SUMMARY
           echo "Server manzili: $URL" >> $GITHUB_STEP_SUMMARY
