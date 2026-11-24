@@ -33,7 +33,7 @@ img{display:block;max-width:100%}
 .coins{display:flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:6px 14px 6px 8px;font-family:Fredoka;font-weight:700;font-size:18px;box-shadow:0 4px 0 rgba(27,37,89,.15)}
 .coins i{font-style:normal;font-size:22px;animation:pulse 2.4s infinite}
 /* hero */
-.hero2{position:relative;margin:4px 0 14px;border-radius:30px;overflow:hidden;aspect-ratio:4/3;box-shadow:0 6px 0 rgba(27,37,89,.18),0 14px 30px rgba(27,37,89,.15);border:4px solid #fff}
+.hero2{position:relative;margin:4px 0 18px;border-radius:30px;overflow:hidden;aspect-ratio:16/11;box-shadow:0 6px 0 rgba(27,37,89,.18),0 14px 30px rgba(27,37,89,.15);border:4px solid #fff}
 .hero2 img{width:100%;height:100%;object-fit:cover}
 .bubble{position:absolute;left:12px;top:12px;max-width:74%;background:#fff;border-radius:18px 18px 18px 6px;padding:8px 14px;font-family:Fredoka;font-weight:600;font-size:17px;line-height:1.2;box-shadow:0 4px 0 rgba(27,37,89,.15);animation:bob 3s ease-in-out infinite}
 .bubble small{display:block;font-family:Nunito;font-weight:800;font-size:12.5px;color:var(--muted);margin-top:2px}
@@ -207,6 +207,30 @@ img{display:block;max-width:100%}
 .ptools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .ptools button{background:#fff;border-radius:14px;padding:9px 4px;font-family:Fredoka;font-weight:600;font-size:14px;box-shadow:0 3px 0 rgba(27,37,89,.12)}
 .ptools button.on{background:var(--ink);color:#fff}
+/* bosh sahifa o'yin kartalari */
+.g{position:relative;display:block;width:100%;aspect-ratio:16/10;border-radius:var(--r);overflow:hidden;margin-bottom:18px;border:4px solid #fff;background:var(--c);box-shadow:0 7px 0 var(--c2),0 14px 26px rgba(27,37,89,.18);text-align:left;transition:transform .12s;animation:pop .45s both}
+.g:active{transform:translateY(4px) scale(.98)}
+.g>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.g .gl{position:absolute;left:0;right:0;bottom:0;padding:46px 14px 13px;background:linear-gradient(transparent,var(--c2) 78%);color:#fff;display:flex;align-items:flex-end;gap:10px}
+.g .gl>div{flex:1;min-width:0}
+.g b{display:block;font-family:Fredoka;font-size:27px;font-weight:700;line-height:1;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.g small{display:block;font-size:13.5px;margin-top:4px;opacity:.95}
+.g .gbtn{flex:none;width:58px;height:58px;border-radius:50%;background:#fff;color:var(--c2);display:grid;place-items:center;font-size:24px;box-shadow:0 4px 0 rgba(0,0,0,.18);animation:pulse 1.8s infinite}
+.g .tag{position:absolute;left:10px;top:10px;background:#fff;color:var(--ink);font-family:Fredoka;font-weight:600;font-size:13.5px;padding:4px 11px;border-radius:99px;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.g .tbar{height:8px;border-radius:9px;background:rgba(255,255,255,.35);margin-top:7px;overflow:hidden;max-width:220px}
+.g .tbar i{display:block;height:100%;width:0;background:#fff;border-radius:9px}
+.g.blue{--c:#2f6bff;--c2:#1c47c9}.g.red{--c:#ff4d4d;--c2:#c42424}.g.pink{--c:#ff8a3d;--c2:#d9407e}.g.orange{--c:#ff8a1f;--c2:#d9650a}.g.purple{--c:#7d34e0;--c2:#5a1fb0}.g.green{--c:#3ec21a;--c2:#2a8e0e}
+.gpaint{background:linear-gradient(135deg,#ffd23f,#ff8a3d 45%,#ff5fa2)}
+.gpaint .pages{position:absolute;inset:0 0 30% 0;display:flex;justify-content:center;align-items:center;gap:0}
+.gpaint .pages img{width:30%;aspect-ratio:660/876;object-fit:cover;background:#fff;border:4px solid #fff;border-radius:12px;box-shadow:0 6px 14px rgba(0,0,0,.18)}
+.gpaint .pages img:nth-child(1){transform:rotate(-9deg) translate(14px,8px)}
+.gpaint .pages img:nth-child(2){transform:scale(1.1);z-index:1}
+.gpaint .pages img:nth-child(3){transform:rotate(9deg) translate(-14px,8px)}
+.allw{display:flex;justify-content:space-between;align-items:center;width:100%;margin:-8px 0 18px;background:#fff;border-radius:16px;padding:11px 16px;font-family:Fredoka;font-weight:600;font-size:16px;box-shadow:0 4px 0 rgba(27,37,89,.12)}
+.allw span{font-size:22px;color:var(--muted)}
+.parents{font-family:Fredoka;font-size:19px;font-weight:600;margin:26px 4px 10px;color:var(--ink)}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.g:nth-of-type(2){animation-delay:.06s}.g:nth-of-type(3){animation-delay:.12s}.g:nth-of-type(4){animation-delay:.18s}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
 </head>
@@ -223,23 +247,44 @@ img{display:block;max-width:100%}
     <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/78b9173b-032e-42b5-8a38-47ea3db5f844.jpg" alt="Odobim qahramonlari">
     <div class="bubble"><span id="hello">Assalomu alaykum!</span><small>Bugun nima o‘ynaymiz? 🎈</small></div>
   </div>
-  <button class="play" data-go="oyin">
+  <button class="g blue" data-go="oyin">
     <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/71ce17b7-fe69-4cea-ab8f-cd08ef0a5b6a.jpg" alt="">
-    <div class="pl"><div><b>Odob yo‘li</b><small>Yugur, tanga yig‘, savolga javob ber</small></div><span class="pbtn">▶ O‘YNASH</span></div>
+    <span class="tag">🏆 Eng sevimli</span>
+    <div class="gl"><div><b>Odob yo‘li</b><small>Yugur, tanga yig‘, savolga javob ber</small></div><span class="gbtn">▶</span></div>
   </button>
+  <button class="g red" id="g-new">
+    <img id="g-new-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/e24d2d04-e138-4d17-8eb8-4efdcae5b5f8.jpg" alt="" style="object-position:50% 25%">
+    <span class="tag">🆕 Yangi multfilm</span>
+    <div class="gl"><div><b id="g-new-t">Multfilmlar</b><small>Halili va opalari bilan tomosha qil</small></div><span class="gbtn">▶</span></div>
+  </button>
+  <button class="allw" data-go="watch">📺 Barcha multfilmlar <span>›</span></button>
+  <button class="g pink gpaint" data-go="boyash">
+    <div class="pages"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/9677b3c3-0da3-4e9d-af52-06fb7c2e4b44.png" alt=""><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/f2fed831-2504-4407-96c0-3c6ea5cbd7f3.png" alt=""><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/6c185951-e85a-4118-aebc-f721becde747.png" alt=""></div>
+    <span class="tag" id="ptag">0/6 🎨</span>
+    <div class="gl"><div><b>Rasm bo‘yash</b><small>Halili va opalarini o‘zing bo‘ya!</small></div><span class="gbtn">🖌</span></div>
+  </button>
+  <button class="g orange" data-go="juft">
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/02fda3d3-759f-4b94-8bdd-e4205c3ca12c.jpg" alt="">
+    <span class="tag">🧠 Xotira o‘yini</span>
+    <div class="gl"><div><b>Juftini top</b><small>Bir xil rasmlarni top</small></div><span class="gbtn">▶</span></div>
+  </button>
+  <button class="g purple" data-go="quiz">
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/b7342260-5481-42de-9b65-a3e0eabc326d.jpg" alt="">
+    <span class="tag">❓ Qaysi biri to‘g‘ri?</span>
+    <div class="gl"><div><b>Odob viktorinasi</b><small>Multfilmni ko‘rdingmi? Endi javob ber!</small></div><span class="gbtn">▶</span></div>
+  </button>
+  <button class="g green" data-go="diary">
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/46ea1039-2fdf-4ef5-bd32-f2d18a590b16.jpg" alt="">
+    <span class="tag" id="dtag">0/8 ⭐</span>
+    <div class="gl"><div><b>Yaxshi ishlar</b><small>Bugun <span id="htoday">0/8</span> ta yaxshi ish</small><div class="tbar"><i id="htbar"></i></div></div><span class="gbtn">⭐</span></div>
+  </button>
+
+  <div class="parents">👨‍👩‍👧 Ota-onalar uchun</div>
   <button class="order" data-go="order">
     <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/395bc855-959c-4e51-b229-1e40487a3ea8.jpg" alt="">
     <span class="new">YANGI</span>
     <div class="ot"><b>🎬 Farzandingiz Odobimda!</b><small>Halili va opalari bilan maxsus multfilm</small></div>
   </button>
-  <div class="cards4">
-    <button class="c4 orange" data-go="juft"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/02fda3d3-759f-4b94-8bdd-e4205c3ca12c.jpg" alt=""><span>Juftini top</span></button>
-    <button class="c4 purple" data-go="quiz"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/b7342260-5481-42de-9b65-a3e0eabc326d.jpg" alt=""><span>Odob viktorinasi</span></button>
-    <button class="c4 green" data-go="diary"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/46ea1039-2fdf-4ef5-bd32-f2d18a590b16.jpg" alt=""><em id="dtag">0 ⭐</em><span>Yaxshi ishlar</span></button>
-    <button class="c4 sky" data-go="watch"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/e24d2d04-e138-4d17-8eb8-4efdcae5b5f8.jpg" alt=""><span>Multfilmlar</span></button>
-  </div>
-  <button class="paint" data-go="boyash"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/f2fed831-2504-4407-96c0-3c6ea5cbd7f3.png" alt=""><div><b>🎨 Rasm bo‘yash</b><small>Halili va opalarini o‘zing bo‘ya!</small></div><em id="ptag">0/6</em></button>
-  <button class="today" data-go="diary"><span class="em">🌟</span><div><b><span>Bugungi yaxshi ishlar</span><span id="htoday">0/8</span></b><div class="tbar"><i id="htbar"></i></div></div></button>
   <button class="share" id="share">🤝 Do‘stlaringga ham yubor</button>
   <div class="foot">
     Odobim — bolalar uchun tarbiyaviy multfilmlar
@@ -337,7 +382,7 @@ img{display:block;max-width:100%}
 
 <script>
 /* yangi versiya chiqsa, eski keshni chetlab o'tish */
-(function(){ var V=10; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
+(function(){ var V=11; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
   if(j&&j.v>V){ var k="odv"+j.v; if(!sessionStorage.getItem(k)){ sessionStorage.setItem(k,1); location.replace(location.pathname+"?v="+j.v+"&t="+Date.now()+location.hash); } } }).catch(function(){}); }catch(e){} })();
 
 (function(){
@@ -422,13 +467,15 @@ $$("[data-go]").forEach(function(b){ b.onclick=function(){ go(b.dataset.go); }; 
 $$("[data-back]").forEach(function(b){ b.onclick=function(){ go("home"); }; });
 if (tg) try{ tg.BackButton.onClick(function(){ go("home"); }); }catch(e){}
 $$("[data-ext]").forEach(function(a){ a.onclick=function(ev){ ev.preventDefault(); openLink(a.href); }; });
+$("#g-new").onclick=function(){ var y=this.dataset.y; hap(); y ? openLink("https://www.youtube.com/shorts/"+y) : go("watch"); };
 $("#share").onclick=function(){ openLink("https://t.me/share/url?url="+encodeURIComponent(BOT)+"&text="+encodeURIComponent("Odobim — Halili va opalari bilan odob o‘rganadigan o‘yinlar! 🌟")); };
 
 function homeRender(){
   var u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
   $("#hello").textContent = "Assalomu alaykum" + (u && u.first_name ? ", "+u.first_name : "") + "!";
   var t=(DB.data.total||0), td=((DB.data.days||{})[dk()]||[]).length;
-  $("#dtag").textContent = td+"/8 ⭐"; $("#hstars").textContent = t;
+  $("#dtag").textContent = td+"/8 ⭐";
+  var le=EPS.filter(released).slice(-1)[0]; if(le){ $("#g-new-img").src=le.img; $("#g-new-t").textContent=le.t; $("#g-new").dataset.y=le.y||""; } $("#hstars").textContent = t;
   $("#ptag").textContent = Object.keys(DB.data.paint||{}).length+"/6 🎨";
   $("#htoday").textContent = td+"/"+DEEDS.length; $("#htbar").style.width = (td/DEEDS.length*100)+"%";
 }
