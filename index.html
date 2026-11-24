@@ -6,113 +6,131 @@
 <title>Odobim</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1d2a5b;--muted:#5d6788;--bg:#fff8ec;--card:#ffffff;--blue:#2f55d4;--blue2:#1f3a9e;--gold:#f6b72c;--gold2:#e79a12;--green:#2fae66;--red:#e5534b;--line:#efe3cc;--r:22px}
+:root{--ink:#1b2559;--muted:#5b6690;--card:#ffffff;--blue:#2f6bff;--blue2:#1c47c9;--gold:#ffc531;--gold2:#e79a12;--green:#2fbf5f;--red:#ff5a4f;--line:rgba(27,37,89,.12);--r:24px;
+ --c-orange:#ff8a1f;--c-orange2:#d9650a;--c-purple:#7d34e0;--c-purple2:#5a1fb0;--c-green:#3ec21a;--c-green2:#2a8e0e;--c-sky:#1fa8f2;--c-sky2:#0b7bc0}
 [hidden]{display:none!important}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;font-weight:700}
-body{min-height:100vh;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+html{background:#8fd6ff}
+body{margin:0;color:var(--ink);font-family:Nunito,system-ui,sans-serif;font-weight:800;min-height:100vh;padding-bottom:calc(28px + env(safe-area-inset-bottom));
+ background:radial-gradient(120px 50px at 12% 90px,#fff 60%,transparent 62%),radial-gradient(160px 60px at 88% 150px,#fff 60%,transparent 62%),radial-gradient(110px 40px at 70% 40px,rgba(255,255,255,.8) 60%,transparent 62%),linear-gradient(#8fd6ff 0,#c7efff 360px,#fff7e8 760px,#fff7e8 100%);background-repeat:no-repeat}
+h1,h2,h3,.f{font-family:Fredoka,Nunito,sans-serif}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 img{display:block;max-width:100%}
 .wrap{max-width:520px;margin:0 auto;padding:0 16px}
-.view{display:none;animation:in .25s ease}
+.view{display:none;animation:in .3s ease}
 .view.on{display:block}
-@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-/* bosh sahifa */
-.hero{position:relative;margin:12px 0 18px;border-radius:28px;overflow:hidden;background:#f3e6cf;aspect-ratio:540/470;box-shadow:0 10px 30px rgba(29,42,91,.12)}
-.hero>img{width:100%;height:100%;object-fit:cover}
-.hero .badge{position:absolute;left:14px;top:14px;width:78px;height:78px;border-radius:50%;box-shadow:0 6px 16px rgba(0,0,0,.18)}
-.hero .hi{position:absolute;left:0;right:0;bottom:0;padding:44px 18px 16px;background:linear-gradient(transparent,rgba(20,30,70,.78));color:#fff}
-.hero h1{margin:0;font-size:30px;font-weight:900;letter-spacing:.3px}
-.hero p{margin:4px 0 0;font-size:15px;opacity:.95}
-.menu{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tile{position:relative;background:var(--card);border-radius:var(--r);padding:16px 14px 14px;text-align:left;box-shadow:0 4px 0 var(--line),0 8px 20px rgba(29,42,91,.06);min-height:128px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .12s}
-.tile:active{transform:scale(.97)}
-.tile .em{font-size:38px;line-height:1}
-.tile b{font-size:17px;font-weight:900;display:block}
-.tile small{font-size:13px;color:var(--muted);font-weight:700}
-.tile.big{grid-column:1/-1;flex-direction:row;align-items:center;gap:14px;min-height:96px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 5px 0 #162c78,0 10px 24px rgba(31,58,158,.3)}
-.tile.big small{color:#dbe4ff}
-.tile.big .em{font-size:46px}
-.tile .tag{position:absolute;right:12px;top:12px;font-size:11px;background:var(--gold);color:#5a3b00;padding:3px 8px;border-radius:99px;font-weight:900}
-.foot{margin:20px 0 6px;text-align:center;color:var(--muted);font-size:13px}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+/* yuqori panel */
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 2px 8px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand img{width:46px;height:46px;border-radius:50%;box-shadow:0 3px 0 rgba(0,0,0,.12),0 0 0 3px #fff}
+.brand b{font-family:Fredoka;font-size:28px;font-weight:700;color:#fff;letter-spacing:.5px;text-shadow:0 2px 0 #1c47c9,0 3px 8px rgba(28,71,201,.35)}
+.coins{display:flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:6px 14px 6px 8px;font-family:Fredoka;font-weight:700;font-size:18px;box-shadow:0 4px 0 rgba(27,37,89,.15)}
+.coins i{font-style:normal;font-size:22px;animation:pulse 2.4s infinite}
+/* hero */
+.hero2{position:relative;margin:4px 0 14px;border-radius:30px;overflow:hidden;aspect-ratio:4/3;box-shadow:0 6px 0 rgba(27,37,89,.18),0 14px 30px rgba(27,37,89,.15);border:4px solid #fff}
+.hero2 img{width:100%;height:100%;object-fit:cover}
+.bubble{position:absolute;left:12px;top:12px;max-width:74%;background:#fff;border-radius:18px 18px 18px 6px;padding:8px 14px;font-family:Fredoka;font-weight:600;font-size:17px;line-height:1.2;box-shadow:0 4px 0 rgba(27,37,89,.15);animation:bob 3s ease-in-out infinite}
+.bubble small{display:block;font-family:Nunito;font-weight:800;font-size:12.5px;color:var(--muted);margin-top:2px}
+/* o'ynash kartasi */
+.play{position:relative;display:block;width:100%;border-radius:var(--r);overflow:hidden;aspect-ratio:16/9;margin-bottom:14px;box-shadow:0 7px 0 var(--blue2),0 14px 26px rgba(28,71,201,.3);border:4px solid #fff;transition:transform .12s;text-align:left}
+.play:active,.c4:active{transform:translateY(4px) scale(.98)}
+.play img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.play .pl{position:absolute;left:0;right:0;bottom:0;padding:40px 16px 14px;background:linear-gradient(transparent,rgba(16,40,130,.85));color:#fff;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.play b{font-family:Fredoka;font-size:26px;font-weight:700;display:block;line-height:1}
+.play small{font-size:13px;opacity:.95}
+.pbtn{flex:none;background:var(--gold);color:#5a3400;font-family:Fredoka;font-weight:700;font-size:18px;padding:10px 16px;border-radius:16px;box-shadow:0 4px 0 var(--gold2);animation:pulse 1.8s infinite}
+/* 4 karta */
+.cards4{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.c4{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:1/1.08;border:4px solid #fff;transition:transform .12s;text-align:left;background:var(--c);box-shadow:0 7px 0 var(--c2),0 12px 22px rgba(27,37,89,.15)}
+.c4 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.c4 span{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 9px;text-align:center;color:#fff;font-family:Fredoka;font-weight:700;font-size:18px;line-height:1.05;background:linear-gradient(transparent,var(--c2) 70%);text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.c4 em{position:absolute;right:8px;top:8px;font-style:normal;background:#fff;color:var(--ink);font-family:Fredoka;font-size:13px;padding:3px 9px;border-radius:99px;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.orange{--c:var(--c-orange);--c2:var(--c-orange2)} .purple{--c:var(--c-purple);--c2:var(--c-purple2)} .green{--c:var(--c-green);--c2:var(--c-green2)} .sky{--c:var(--c-sky);--c2:var(--c-sky2)}
+/* bugungi holat */
+.today{width:100%;text-align:left;margin-top:16px;background:#fff;border-radius:20px;padding:12px 14px;box-shadow:0 5px 0 rgba(27,37,89,.12);display:flex;align-items:center;gap:12px}
+.today .em{font-size:30px}
+.today div{flex:1}
+.today b{font-family:Fredoka;font-size:16px;font-weight:600;display:flex;justify-content:space-between}
+.tbar{height:12px;background:#ffe9b3;border-radius:99px;overflow:hidden;margin-top:6px}
+.tbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffc531,#ff8a1f);border-radius:99px;transition:width .4s}
+.share{display:block;width:100%;margin-top:14px;background:var(--green);color:#fff;border-radius:18px;padding:15px;font-family:Fredoka;font-size:18px;font-weight:600;box-shadow:0 5px 0 #1e8a40}
+.foot{margin:18px 0 6px;text-align:center;color:var(--muted);font-size:13px}
 .links{display:flex;gap:10px;justify-content:center;margin-top:10px}
-.links a{color:var(--blue2);text-decoration:none;background:#fff;border-radius:99px;padding:8px 14px;box-shadow:0 2px 0 var(--line);font-size:14px}
-.share{display:block;width:100%;margin-top:14px;background:var(--gold);color:#4a3200;border-radius:16px;padding:14px;font-size:16px;font-weight:900;box-shadow:0 4px 0 var(--gold2)}
-/* sarlavha */
-.bar{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;align-items:center;gap:10px;padding:12px 0 10px}
-.back{width:42px;height:42px;border-radius:14px;background:#fff;box-shadow:0 3px 0 var(--line);font-size:22px;display:grid;place-items:center}
-.bar h2{margin:0;font-size:21px;font-weight:900;flex:1}
-.pill{background:#fff;border-radius:99px;padding:6px 12px;font-size:14px;box-shadow:0 2px 0 var(--line);white-space:nowrap}
+.links a{color:var(--blue2);text-decoration:none;background:#fff;border-radius:99px;padding:8px 14px;box-shadow:0 3px 0 var(--line);font-size:14px}
+/* ichki sahifa sarlavhasi */
+.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 0 10px}
+.back{width:44px;height:44px;border-radius:15px;background:#fff;box-shadow:0 4px 0 rgba(27,37,89,.15);font-size:26px;display:grid;place-items:center;font-family:Fredoka}
+.bar h2{margin:0;font-size:23px;font-weight:700;flex:1;color:var(--ink)}
+.pill{background:#fff;border-radius:99px;padding:7px 13px;font-size:14px;box-shadow:0 3px 0 rgba(27,37,89,.15);white-space:nowrap;font-family:Fredoka;font-weight:600}
+.shead{position:relative;border-radius:22px;overflow:hidden;height:120px;margin-bottom:12px;border:4px solid #fff;background:var(--c);box-shadow:0 6px 0 var(--c2)}
+.shead img{position:absolute;right:0;top:0;height:100%;width:auto;max-width:none}
+.shead p{position:absolute;left:14px;top:50%;transform:translateY(-50%);margin:0;max-width:55%;color:#fff;font-family:Fredoka;font-size:17px;font-weight:600;line-height:1.2;text-shadow:0 2px 0 rgba(0,0,0,.18)}
 /* juftini top */
-.levels{display:flex;gap:8px;margin:4px 0 12px}
-.levels button{flex:1;background:#fff;border-radius:14px;padding:10px 4px;box-shadow:0 3px 0 var(--line);font-size:14px}
-.levels button.on{background:var(--blue);color:#fff;box-shadow:0 3px 0 var(--blue2)}
+.levels{display:flex;gap:8px;margin:0 0 12px}
+.levels button{flex:1;background:#fff;border-radius:14px;padding:10px 4px;box-shadow:0 4px 0 rgba(27,37,89,.12);font-family:Fredoka;font-size:15px}
+.levels button.on{background:var(--c-orange);color:#fff;box-shadow:0 4px 0 var(--c-orange2)}
 .grid{display:grid;gap:8px}
 .card{position:relative;aspect-ratio:3/4;perspective:700px}
 .card .in{position:absolute;inset:0;transition:transform .35s;transform-style:preserve-3d}
 .card.up .in,.card.ok .in{transform:rotateY(180deg)}
-.card .f,.card .b{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
-.card .f{background:linear-gradient(135deg,#ffcf5a,#f6a623);display:grid;place-items:center;box-shadow:0 3px 0 #d98b0e}
-.card .f img{width:58%;border-radius:50%;opacity:.95}
-.card .b{transform:rotateY(180deg);background:#fff;box-shadow:0 3px 0 var(--line)}
+.card .f,.card .b{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border:3px solid #fff}
+.card .f{background:linear-gradient(135deg,#ffcf5a,#ff9a2e);display:grid;place-items:center;box-shadow:0 4px 0 #d9650a}
+.card .f img{width:62%;border-radius:50%}
+.card .b{transform:rotateY(180deg);background:#fff;box-shadow:0 4px 0 rgba(27,37,89,.15)}
 .card .b img{width:100%;height:100%;object-fit:cover;object-position:50% 70%}
-.card.ok .b{box-shadow:0 0 0 3px var(--green)}
+.card.ok .b{border-color:var(--green);box-shadow:0 4px 0 #1e8a40}
 /* viktorina */
-.qcard{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 4px 0 var(--line)}
-.qcard img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 62%}
-.qcard .qt{padding:14px 16px 4px;font-size:19px;font-weight:900;text-align:center}
-.qcard .qs{padding:0 16px 12px;text-align:center;color:var(--muted);font-size:14px}
+.qcard{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 5px 0 rgba(27,37,89,.12);border:4px solid #fff}
+.qcard img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 62%;border-radius:18px 18px 0 0}
+.qcard .qt{padding:12px 16px 2px;font-family:Fredoka;font-size:21px;font-weight:700;text-align:center}
+.qcard .qs{padding:0 16px 10px;text-align:center;color:var(--muted);font-size:14px}
 .opts{display:grid;gap:10px;margin-top:12px}
-.opt{background:#fff;border-radius:18px;padding:16px;font-size:17px;font-weight:800;text-align:left;box-shadow:0 4px 0 var(--line);display:flex;align-items:center;gap:12px}
-.opt .ic{width:34px;height:34px;border-radius:50%;background:#eef2ff;display:grid;place-items:center;font-size:18px;flex:none}
-.opt.right{background:#e7f8ee;box-shadow:0 4px 0 #9fdcb7}
+.opt{background:#fff;border-radius:18px;padding:16px;font-size:17px;font-weight:800;text-align:left;box-shadow:0 5px 0 rgba(27,37,89,.12);display:flex;align-items:center;gap:12px}
+.opt .ic{width:36px;height:36px;border-radius:50%;background:#efe6ff;color:var(--c-purple);display:grid;place-items:center;font-size:18px;flex:none;font-family:Fredoka}
+.opt.right{background:#e3fbe9;box-shadow:0 5px 0 #8fdca7}
 .opt.right .ic{background:var(--green);color:#fff}
-.opt.wrong{background:#fdecea;box-shadow:0 4px 0 #f3b0aa}
+.opt.wrong{background:#ffe9e7;box-shadow:0 5px 0 #f6aaa4}
 .opt.wrong .ic{background:var(--red);color:#fff}
 .note{margin-top:12px;background:#fff3d6;border-radius:16px;padding:12px 14px;font-size:15px;line-height:1.35}
-.btn{display:block;width:100%;margin-top:14px;background:var(--blue);color:#fff;border-radius:16px;padding:15px;font-size:17px;font-weight:900;box-shadow:0 4px 0 var(--blue2)}
-.btn.gold{background:var(--gold);color:#4a3200;box-shadow:0 4px 0 var(--gold2)}
-.prog{height:10px;background:#f0e4cc;border-radius:99px;overflow:hidden;margin:2px 0 12px}
-.prog i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .3s}
+.btn{display:block;width:100%;margin-top:14px;background:var(--blue);color:#fff;border-radius:18px;padding:15px;font-family:Fredoka;font-size:19px;font-weight:600;box-shadow:0 5px 0 var(--blue2)}
+.btn.gold{background:var(--gold);color:#5a3400;box-shadow:0 5px 0 var(--gold2)}
+.prog{height:12px;background:rgba(255,255,255,.7);border-radius:99px;overflow:hidden;margin:0 0 12px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,#7d34e0,#b56cff);border-radius:99px;transition:width .3s}
 /* natija */
-.done{text-align:center;padding:20px 8px}
+.done{text-align:center;padding:20px 12px;background:#fff;border-radius:var(--r);margin-top:12px;box-shadow:0 5px 0 rgba(27,37,89,.12)}
 .done .big{font-size:64px}
-.done h3{font-size:24px;margin:8px 0 4px;font-weight:900}
+.done h3{font-size:26px;margin:8px 0 4px;font-weight:700}
 .done p{color:var(--muted);margin:0}
 .stars{font-size:38px;letter-spacing:4px;margin:10px 0}
 /* kundalik */
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px}
-.day{background:#fff;border-radius:12px;padding:6px 0;text-align:center;font-size:12px;color:var(--muted);box-shadow:0 2px 0 var(--line)}
-.day b{display:block;font-size:15px;color:var(--ink)}
-.day.today{outline:2px solid var(--blue)}
+.day{background:#fff;border-radius:12px;padding:6px 0;text-align:center;font-size:12px;color:var(--muted);box-shadow:0 3px 0 rgba(27,37,89,.12)}
+.day b{display:block;font-size:15px;color:var(--ink);font-family:Fredoka}
+.day.today{outline:3px solid var(--c-green)}
 .day.full{background:#fff3d6}
 .deeds{display:grid;gap:10px}
-.deed{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 3px 0 var(--line);text-align:left;font-size:16px}
+.deed{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 4px 0 rgba(27,37,89,.12);text-align:left;font-size:16px}
 .deed .em{font-size:30px;width:40px;text-align:center}
 .deed .tx{flex:1}
-.deed .st{font-size:24px;filter:grayscale(1);opacity:.35;transition:.2s}
-.deed.on{background:#fff7dd;box-shadow:0 3px 0 #f1d58a}
-.deed.on .st{filter:none;opacity:1;transform:scale(1.15)}
-.sum{display:flex;gap:10px;margin:4px 0 12px}
-.sum div{flex:1;background:#fff;border-radius:16px;padding:10px;text-align:center;box-shadow:0 3px 0 var(--line);font-size:13px;color:var(--muted)}
-.sum b{display:block;font-size:22px;color:var(--ink)}
-/* multfilmlar, duolar */
-.tabs{display:flex;background:#fff;border-radius:16px;padding:4px;margin-bottom:12px;box-shadow:0 3px 0 var(--line)}
-.tabs button{flex:1;padding:10px;border-radius:12px;font-size:15px}
-.tabs button.on{background:var(--blue);color:#fff}
-.eps{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ep{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 3px 0 var(--line);text-align:left}
-.ep img{width:100%;aspect-ratio:3/4;object-fit:cover}
-.ep div{padding:8px 10px 10px;font-size:14px;line-height:1.2}
-.ep small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
-.ep.soon img{filter:saturate(.4) brightness(.9)}
-.dua{background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 3px 0 var(--line);margin-bottom:10px}
-.dua h4{margin:0 0 6px;font-size:15px;color:var(--blue2)}
-.dua .ar{font-family:Amiri,serif;font-size:26px;direction:rtl;text-align:right;line-height:1.6;color:var(--ink)}
-.dua .tr{font-size:17px;font-weight:900;margin-top:4px}
-.dua .mn{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.35}
+.deed .st{font-size:26px;filter:grayscale(1);opacity:.3;transition:.2s}
+.deed.on{background:#fff7d6;box-shadow:0 4px 0 #f1cf6a}
+.deed.on .st{filter:none;opacity:1;transform:scale(1.2) rotate(-10deg)}
+.sum{display:flex;gap:10px;margin:0 0 12px}
+.sum div{flex:1;background:#fff;border-radius:16px;padding:10px;text-align:center;box-shadow:0 4px 0 rgba(27,37,89,.12);font-size:12.5px;color:var(--muted)}
+.sum b{display:block;font-size:24px;color:var(--ink);font-family:Fredoka}
+/* multfilmlar */
+.eps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ep{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 5px 0 rgba(27,37,89,.12);text-align:left;border:3px solid #fff}
+.ep img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:14px}
+.ep div{padding:8px 8px 8px;font-size:14px;line-height:1.2;font-family:Fredoka;font-weight:600}
+.ep small{display:block;color:var(--c-sky2);font-size:12.5px;margin-top:3px;font-family:Nunito;font-weight:800}
+.ep.soon img{filter:saturate(.35) brightness(.92)}
+.ep.soon small{color:var(--muted)}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
 </head>
@@ -121,18 +139,25 @@ img{display:block;max-width:100%}
 
 <!-- BOSH SAHIFA -->
 <section class="view on" id="v-home">
-  <div class="hero">
-    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/31a643b7-4010-4568-92a9-3daf75b224de.jpg" alt="Odobim qahramonlari">
-    <img class="badge" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/e86eec49-f6b9-4042-93d8-c88c9d3a0daf.png" alt="Odobim">
-    <div class="hi"><h1 id="hello">Assalomu alaykum!</h1><p>Halili va opalari bilan o‘ynab, odob o‘rganamiz</p></div>
+  <header class="top">
+    <div class="brand"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/03086372-2389-448a-ba42-7eb886aafb74.png" alt=""><b>Odobim</b></div>
+    <div class="coins"><i>⭐</i><span id="hstars">0</span></div>
+  </header>
+  <div class="hero2">
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/78b9173b-032e-42b5-8a38-47ea3db5f844.jpg" alt="Odobim qahramonlari">
+    <div class="bubble"><span id="hello">Assalomu alaykum!</span><small>Bugun nima o‘ynaymiz? 🎈</small></div>
   </div>
-  <div class="menu">
-    <button class="tile big" data-go="oyin"><span class="em">🏃</span><div><b>Odob yo‘li</b><small>Yugur, tanga yig‘, savolga javob ber</small></div></button>
-    <button class="tile" data-go="juft"><span class="em">🃏</span><div><b>Juftini top</b><small>Xotira o‘yini</small></div></button>
-    <button class="tile" data-go="quiz"><span class="em">❓</span><div><b>Odob viktorinasi</b><small>Qaysi biri to‘g‘ri?</small></div></button>
-    <button class="tile" data-go="diary"><span class="tag" id="dtag">0 ⭐</span><span class="em">📒</span><div><b>Yaxshi ishlar</b><small>Kundalik va yulduzlar</small></div></button>
-    <button class="tile" data-go="watch"><span class="em">📺</span><div><b>Multfilmlar</b><small>Barcha qismlar</small></div></button>
+  <button class="play" data-go="oyin">
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/71ce17b7-fe69-4cea-ab8f-cd08ef0a5b6a.jpg" alt="">
+    <div class="pl"><div><b>Odob yo‘li</b><small>Yugur, tanga yig‘, savolga javob ber</small></div><span class="pbtn">▶ O‘YNASH</span></div>
+  </button>
+  <div class="cards4">
+    <button class="c4 orange" data-go="juft"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/02fda3d3-759f-4b94-8bdd-e4205c3ca12c.jpg" alt=""><span>Juftini top</span></button>
+    <button class="c4 purple" data-go="quiz"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/b7342260-5481-42de-9b65-a3e0eabc326d.jpg" alt=""><span>Odob viktorinasi</span></button>
+    <button class="c4 green" data-go="diary"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/46ea1039-2fdf-4ef5-bd32-f2d18a590b16.jpg" alt=""><em id="dtag">0 ⭐</em><span>Yaxshi ishlar</span></button>
+    <button class="c4 sky" data-go="watch"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/e24d2d04-e138-4d17-8eb8-4efdcae5b5f8.jpg" alt=""><span>Multfilmlar</span></button>
   </div>
+  <button class="today" data-go="diary"><span class="em">🌟</span><div><b><span>Bugungi yaxshi ishlar</span><span id="htoday">0/8</span></b><div class="tbar"><i id="htbar"></i></div></div></button>
   <button class="share" id="share">🤝 Do‘stlaringga ham yubor</button>
   <div class="foot">
     Odobim — bolalar uchun tarbiyaviy multfilmlar
@@ -146,6 +171,7 @@ img{display:block;max-width:100%}
 <!-- JUFTINI TOP -->
 <section class="view" id="v-juft">
   <div class="bar"><button class="back" data-back>‹</button><h2>Juftini top</h2><span class="pill" id="jmoves">0 urinish</span></div>
+  <div class="shead orange"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/02fda3d3-759f-4b94-8bdd-e4205c3ca12c.jpg" alt=""><p>Bir xil rasmlarni top! 🧠</p></div>
   <div class="levels" id="jlev"><button data-n="4" class="on">Oson</button><button data-n="6">O‘rta</button><button data-n="8">Qiyin</button></div>
   <div class="grid" id="jgrid"></div>
   <div id="jdone"></div>
@@ -154,6 +180,7 @@ img{display:block;max-width:100%}
 <!-- VIKTORINA -->
 <section class="view" id="v-quiz">
   <div class="bar"><button class="back" data-back>‹</button><h2>Odob viktorinasi</h2><span class="pill" id="qscore">⭐ 0</span></div>
+  <div class="shead purple"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/b7342260-5481-42de-9b65-a3e0eabc326d.jpg" alt=""><p>Qaysi biri to‘g‘ri? Tanla! 🤔</p></div>
   <div class="prog"><i id="qprog" style="width:0"></i></div>
   <div id="qbox"></div>
 </section>
@@ -161,6 +188,7 @@ img{display:block;max-width:100%}
 <!-- KUNDALIK -->
 <section class="view" id="v-diary">
   <div class="bar"><button class="back" data-back>‹</button><h2>Yaxshi ishlar</h2><span class="pill" id="dtoday">Bugun 0/8</span></div>
+  <div class="shead green"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/46ea1039-2fdf-4ef5-bd32-f2d18a590b16.jpg" alt=""><p>Har yaxshi ish — bitta yulduz! ⭐</p></div>
   <div class="week" id="dweek"></div>
   <div class="sum"><div><b id="dtotal">0</b>jami ⭐</div><div><b id="dstreak">0</b>kun ketma-ket</div><div><b id="dbest">0</b>eng yaxshi kun</div></div>
   <div class="deeds" id="ddeeds"></div>
@@ -170,6 +198,7 @@ img{display:block;max-width:100%}
 <!-- MULTFILMLAR -->
 <section class="view" id="v-watch">
   <div class="bar"><button class="back" data-back>‹</button><h2>Multfilmlar</h2></div>
+  <div class="shead sky"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/e24d2d04-e138-4d17-8eb8-4efdcae5b5f8.jpg" alt=""><p>Halili va opalarining sarguzashtlari 🍿</p></div>
   <div id="w-eps" class="eps"></div>
 </section>
 
@@ -180,9 +209,9 @@ img{display:block;max-width:100%}
 (function(){
 "use strict";
 var tg = (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData !== undefined) ? Telegram.WebApp : null;
-if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor("#fff8ec"); tg.setBackgroundColor("#fff8ec"); } catch(e){} }
+if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor("#8fd6ff"); tg.setBackgroundColor("#8fd6ff"); } catch(e){} }
 var CDN = "https://d2ol7oe51mr4n9.cloudfront.net/user_3BU2MlPv3we8DCTjdMWqvmqHc6f/";
-var LOGO = CDN + "e86eec49-f6b9-4042-93d8-c88c9d3a0daf.png";
+var LOGO = CDN + "03086372-2389-448a-ba42-7eb886aafb74.png";
 var BOT = "https://t.me/odobimbot";
 var CH = "https://www.youtube.com/@odobim/shorts";
 
@@ -263,7 +292,9 @@ $("#share").onclick=function(){ openLink("https://t.me/share/url?url="+encodeURI
 function homeRender(){
   var u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
   $("#hello").textContent = "Assalomu alaykum" + (u && u.first_name ? ", "+u.first_name : "") + "!";
-  $("#dtag").textContent = (DB.data.total||0)+" ⭐";
+  var t=(DB.data.total||0), td=((DB.data.days||{})[dk()]||[]).length;
+  $("#dtag").textContent = td+"/8 ⭐"; $("#hstars").textContent = t;
+  $("#htoday").textContent = td+"/"+DEEDS.length; $("#htbar").style.width = (td/DEEDS.length*100)+"%";
 }
 
 /* ---------- konfetti ---------- */
