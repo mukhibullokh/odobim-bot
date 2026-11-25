@@ -13,8 +13,10 @@ jobs:
         run: |
           while read -r name url; do
             [ -z "$name" ] && continue
-            curl -sSfL -o "promo/$name" "$url"
-            ls -la "promo/$name"
+            case "$name" in
+              *.zip) curl -sSfL -o /tmp/m.zip "$url"; d="promo/${name%.zip}"; mkdir -p "$d"; unzip -o -q /tmp/m.zip -d "$d"; ls -la "$d";;
+              *) curl -sSfL -o "promo/$name" "$url"; ls -la "promo/$name";;
+            esac
           done < promo/fetch.txt
       - name: Commit
         run: |
