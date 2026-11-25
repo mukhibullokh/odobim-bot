@@ -1,0 +1,7 @@
+<!doctype html><meta charset=utf-8><title>send</title><body>yuborilmoqda...<script>
+(async()=>{const f=new URLSearchParams(location.search).get('f');
+const b=await fetch('igs/'+f).then(r=>r.blob());
+document.body.textContent='tayyor '+b.size;
+window.opener.postMessage({odobim:1,name:f,blob:b},'https://www.instagram.com');
+setTimeout(()=>window.close(),1500);})();
+</script>
