@@ -52,7 +52,7 @@ jobs:
           api setWebhook "{\"url\":\"$URL/webhook\",\"secret_token\":\"$SECRET\",\"allowed_updates\":[\"message\",\"callback_query\"],\"drop_pending_updates\":false}"
           api setMyCommands '{"commands":[{"command":"start","description":"O‘yinlarni ochish"},{"command":"eslatma","description":"Kunlik eslatmani yoqish/o‘chirish"},{"command":"yangiliklar","description":"Yangi multfilm xabarlari"},{"command":"buyurtma","description":"Farzandim uchun multfilm"}]}'
           api setMyCommands '{"scope":{"type":"chat","chat_id":5991137115},"commands":[{"command":"stat","description":"📊 Statistika"},{"command":"start","description":"O‘yinlarni ochish"},{"command":"buyurtma","description":"Farzandim uchun multfilm"}]}'
-          api setChatMenuButton '{"menu_button":{"type":"web_app","text":"🎮 O‘yinlar","web_app":{"url":"https://mukhibullokh.github.io/odobim-bot/?v=13"}}}'
-          api setChatMenuButton '{"chat_id":5991137115,"menu_button":{"type":"web_app","text":"📊 Panel","web_app":{"url":"https://mukhibullokh.github.io/odobim-bot/admin.html?v=13"}}}'
+          api setChatMenuButton '{"menu_button":{"type":"web_app","text":"🎮 O‘yinlar","web_app":{"url":"https://mukhibullokh.github.io/odobim-bot/?v=14"}}}'
+          api setChatMenuButton '{"chat_id":5991137115,"menu_button":{"type":"web_app","text":"📊 Panel","web_app":{"url":"https://mukhibullokh.github.io/odobim-bot/admin.html?v=14"}}}'
           echo "### ✅ Bot ulandi" >> $GITHUB_STEP_SUMMARY
           echo "Server manzili: $URL" >> $GITHUB_STEP_SUMMARY

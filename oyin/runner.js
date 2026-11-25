@@ -356,7 +356,7 @@ R.passGate = function(g){
     const m = this.$(".rmodal"); m.hidden = false; m.className = "rmodal";
     m.innerHTML = `<div class="rcard wrong center"><div class="rbig">🤔</div><h3>${S2.q}</h3>
       <small class="eb" style="color:#1D8A54">To'g'ri javob</small><p class="rans rbigans">${right}</p><p class="rex">${S2.e}</p>
-      <details class="kitob"><summary>📖 Kitobdan o'qish</summary><blockquote>«${q.k}»<cite>«${BOOK.meta.title}», ${q.p}-bet</cite></blockquote></details>
+      ${q.k ? `<details class="kitob"><summary>📖 Kitobdan o'qish</summary><blockquote>«${q.k}»<cite>«${BOOK.meta.title}», ${q.p}-bet</cite></blockquote></details>` : ""}
       <button class="gbtn go big" data-a="go">Tushundim 👍</button><small class="muted">Bu savol yana chiqadi</small></div>`;
     m.querySelector('[data-a="go"]').onclick = () => { m.hidden = true; this.hold = true; this.paused = false; this.countdown(() => this.resume()); };
   }

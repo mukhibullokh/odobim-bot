@@ -398,7 +398,7 @@ img{display:block;max-width:100%}
 
 <script>
 /* yangi versiya chiqsa, eski keshni chetlab o'tish */
-(function(){ var V=12; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
+(function(){ var V=14; try{ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
   if(j&&j.v>V){ var k="odv"+j.v; if(!sessionStorage.getItem(k)){ sessionStorage.setItem(k,1); location.replace(location.pathname+"?v="+j.v+"&t="+Date.now()+location.hash); } } }).catch(function(){}); }catch(e){} })();
 
 (function(){
@@ -467,7 +467,7 @@ var DB = {data:{}, load:function(cb){
 /* ---------- navigatsiya ---------- */
 var cur="home";
 function go(v){
-  if (v==="oyin"){ location.href="oyin/"; return; }
+  if (v==="oyin"){ location.href="oyin/?v=14"; return; }
   $$(".view").forEach(function(x){ x.classList.remove("on"); });
   $("#v-"+v).classList.add("on"); cur=v; window.scrollTo(0,0);
   if (tg){ try{ v==="home" ? tg.BackButton.hide() : tg.BackButton.show(); }catch(e){} }
@@ -778,6 +778,7 @@ $("#p-send").onclick=function(){
    .then(function(){ setTimeout(function(){ b.disabled=false; b.textContent="📤 Oilamga yuborish"; },3000); });
 };
 
+if (tg && !location.hash) try{ tg.BackButton.hide(); }catch(e){}
 DB.load(function(){ homeRender(); var h=location.hash.slice(1); if (h==="ertak"){ go("order"); tarSel("ertak"); } else if (h && $("#v-"+h)) go(h); });
 })();
 </script>

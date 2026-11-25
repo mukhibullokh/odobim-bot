@@ -206,7 +206,7 @@ const dur = ms => { ms=Math.max(0,ms); const h=Math.floor(ms/36e5), m=Math.floor
 const app = $("#app"), nav = $("#nav");
 let tab = "home", stack = [], quizTimer = null, clockTimer = null;
 function go(name, p){ stack.push({name, p}); render(true); }
-function back(){ if (overlay()) return; if (OD_ONLY && stack.length <= 1){ try { if (window.parent !== window) window.parent.postMessage({odobim:"back"}, "*"); else location.href = "../"; } catch(e){} return; } if (stack.length){ const top = stack[stack.length-1]; if (top.name==="run" && !top.p.done){ confirmExit(); return; } stack.pop(); render(true);} }
+function back(){ if (overlay()) return; if (OD_ONLY && stack.length <= 1){ try { if (window.parent !== window) window.parent.postMessage({odobim:"back"}, "*"); else location.href = "../?v=" + Date.now(); } catch(e){} return; } if (stack.length){ const top = stack[stack.length-1]; if (top.name==="run" && !top.p.done){ confirmExit(); return; } stack.pop(); render(true);} }
 function setTab(tb){ tab = tb; stack = []; render(true); }
 function overlay(){ const m = $(".modal"); if (m){ m.remove(); return true; } return false; }
 nav.addEventListener("click", e=>{ const b=e.target.closest("button[data-tab]"); if(b){ tick(660); haptic("i","light"); setTab(b.dataset.tab); } });
@@ -218,7 +218,7 @@ function render(scroll){
   if (!S.onboarded) { nav.hidden = true; return renderOnboard(); }
   if (!S.registered) { nav.hidden = true; return renderRegister(); }
   const top = stack[stack.length-1];
-  if (tg) try { stack.length > ((OD_ONLY && window.parent !== window) ? 1 : 0) ? tg.BackButton.show() : tg.BackButton.hide(); } catch(e){}
+  if (tg) try { (OD_ONLY || stack.length > 0) ? tg.BackButton.show() : tg.BackButton.hide(); } catch(e){}
   const full = OD_ONLY || (top && PAGES[top.name].full);
   nav.hidden = !!full; document.body.classList.toggle("has-nav", !full); document.body.classList.toggle("odroot", OD_ONLY && stack.length <= 1);
   $$("button[data-tab]", nav).forEach(b=>{ b.classList.toggle("on", b.dataset.tab===tab); b.querySelector("span").textContent = t(b.dataset.tab); });
